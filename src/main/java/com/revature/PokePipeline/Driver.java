@@ -1,6 +1,6 @@
 package com.revature.PokePipeline;
 
-import com.revature.PokePipeline.model.Type;
+import com.revature.PokePipeline.models.Type;
 import com.revature.PokePipeline.utility.TypeConversions;
 
 public class Driver {

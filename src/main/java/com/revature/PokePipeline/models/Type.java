@@ -1,4 +1,4 @@
-package com.revature.PokePipeline.model;
+package com.revature.PokePipeline.models;
 
 public enum Type {
 	

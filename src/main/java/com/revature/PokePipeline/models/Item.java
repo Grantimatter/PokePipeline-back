@@ -1,8 +1,17 @@
-package com.revature.PokePipeline.model;
+package com.revature.PokePipeline.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Item {
-	// constructors: with id, without id
-	private int itemId; // primary key
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int itemId;
+	
 	private int itemAPI;
 	
 	public Item() {
