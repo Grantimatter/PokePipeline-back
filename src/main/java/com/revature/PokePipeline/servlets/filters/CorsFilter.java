@@ -1,5 +1,8 @@
 package com.revature.PokePipeline.servlets.filters;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -22,11 +25,14 @@ public class CorsFilter implements Filter {
  * However, we can have filters to detect certain requests, and perhaps deny them
  * before they even reach a Servlet
  */
+
+	private static Logger log = LogManager.getLogger(CorsFilter.class);
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		System.out.println("CORS Filter leveraged");
+		log.debug("CORS Filter leveraged");
 		
 		if(!(response instanceof HttpServletResponse)) {
 			chain.doFilter(request, response);
