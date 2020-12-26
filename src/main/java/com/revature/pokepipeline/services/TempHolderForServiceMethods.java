@@ -1,4 +1,4 @@
-package com.revature.PokePipeline.services;
+package com.revature.pokepipeline.services;
 
 public class TempHolderForServiceMethods {
 	

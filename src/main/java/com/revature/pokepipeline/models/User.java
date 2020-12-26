@@ -1,4 +1,4 @@
-package com.revature.PokePipeline.models;
+package com.revature.pokepipeline.models;
 
 import java.util.List;
 

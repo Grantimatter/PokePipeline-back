@@ -1,4 +1,4 @@
-package com.revature.PokePipeline.servlets.filters;
+package com.revature.pokepipeline.servlets.filters;
 
 import java.io.IOException;
 

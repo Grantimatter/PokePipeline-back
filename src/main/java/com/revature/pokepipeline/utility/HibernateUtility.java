@@ -1,4 +1,4 @@
-package com.revature.PokePipeline.utility;
+package com.revature.pokepipeline.utility;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
