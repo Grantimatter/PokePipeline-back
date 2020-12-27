@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.revature.pokepipeline.controllers.AuthController;
 import com.revature.pokepipeline.controllers.PokemonController;
+import com.revature.pokepipeline.controllers.UserController;
 
 public class MasterServlet extends HttpServlet {
 	
@@ -22,6 +23,7 @@ public class MasterServlet extends HttpServlet {
 
 		final String URI = req.getRequestURI().replace("/pokepipeline/", "");
 		
+		// user cases
 		switch (URI) {
 		case "login":
 			authController.login(req, res);
@@ -31,12 +33,21 @@ public class MasterServlet extends HttpServlet {
 			authController.logout(req, res);
 			break;
 			
+		case "updateprofile":
+			UserController.updateProfile(req, res);
+			break;
+			
+			// pokemon cases
 		case "addpokemon": // for inserting pokemon to db (not updating)
 			pokemonController.addPokemon(req, res);
 			break;
 			
 		case "updatepokemon": // for updating hp/experience
 			pokemonController.updatePokemon(req, res);
+			break;
+			
+		case "deletepokemon": // this id probably not needed. maybe just use to clean up database
+			pokemonController.deletePokemon(req, res);
 			break;
 			
 		default:

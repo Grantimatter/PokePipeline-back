@@ -6,6 +6,7 @@ public interface PokemonService {
 
 	boolean addPokemon(Pokemon pokemon);
 	boolean updatePokemon(Pokemon pokemon);
+	boolean deletePokemon(Pokemon pokemon);
 	
 	
 

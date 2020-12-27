@@ -27,18 +27,21 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void updateUser(Users user) {
+	public boolean updateUser(Users user) {
+		boolean isUpdated = false;
 		Session session = HibernateUtility.getSession();
 		Transaction transaction;
 		try {
 			transaction = session.beginTransaction();
 			session.update(user);
 			transaction.commit();
+			isUpdated = true;
 		} catch (Exception e) {
 			System.out.println(e);
 		}finally {
 			session.close();
 		}
+		return isUpdated;
 	}
 
 	@Override

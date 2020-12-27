@@ -19,7 +19,7 @@ import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
 public class PokemonController {
 	
-	private static Logger log = LogManager.getLogger(CorsFilter.class);
+	private Logger log = LogManager.getLogger(CorsFilter.class);
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private PokemonService pokemonService = new PokemonServiceImpl();
 
@@ -47,7 +47,7 @@ public class PokemonController {
 			}
 		}
 		else {
-			log.warn("Warning: Could not locate user.");
+			log.warn("Could not locate user.");
 		}
 	}
 
@@ -75,7 +75,35 @@ public class PokemonController {
 			}
 		}
 		else {
-			log.warn("Warning: Could not locate user.");
+			log.warn("Could not locate user.");
+		}
+	}
+
+	public void deletePokemon(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		BufferedReader reader = req.getReader();
+		StringBuilder stringBuilder = new StringBuilder();
+		String line = reader.readLine();
+		while (line != null) {
+			stringBuilder.append(line);
+			line = reader.readLine();
+		}
+		String body = new String(stringBuilder);
+		Pokemon pokemon = objectMapper.readValue(body, Pokemon.class);
+		HttpSession httpSession = req.getSession(false);
+		if (httpSession != null) {
+			Users user = (Users) httpSession.getAttribute("user");
+			pokemon.setUser(user);
+			if (pokemonService.deletePokemon(pokemon)) {
+				res.setStatus(200);
+				log.info("Successfully deleted Pokemon.");
+			}
+			else {
+				res.setStatus(401);
+				log.warn("Could not delete Pokemon.");
+			}
+		}
+		else {
+			log.warn("Could not locate user.");
 		}
 	}
 

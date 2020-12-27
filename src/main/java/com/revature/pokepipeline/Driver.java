@@ -25,8 +25,8 @@ public class Driver {
 		Users topheryun = new Users(1, "test", "topheryun@gmail.com", "Pokemon Master", null, null, null);
 //		userDAO.insertUser(topheryun);
 
-		Pokemon pokemon = new Pokemon(1, 2, 49, 16, 1, 2, 3, 4, topheryun);
-		pokemonService.updatePokemon(pokemon);
+		Pokemon pokemon = new Pokemon(2, 2, 0, 16, 1, 2, 3, 4, null);
+		System.out.println(pokemonService.deletePokemon(pokemon));
 		
 		
 	}

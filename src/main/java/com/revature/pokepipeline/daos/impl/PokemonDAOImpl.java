@@ -47,6 +47,24 @@ public class PokemonDAOImpl implements PokemonDAO {
 		}
 		return isUpdated;
 	}
+	
+	@Override
+	public boolean deletePokemon(Pokemon pokemon) {
+		boolean isDeleted = false;
+		Session session = HibernateUtility.getSession();
+		Transaction transaction;
+		try {
+			transaction = session.beginTransaction();
+			session.delete(pokemon);
+			transaction.commit();
+			isDeleted = true;
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			session.close();
+		}
+		return isDeleted;
+	}
 
 	@Override
 	public Pokemon getPokemonById(int pokemonId) {

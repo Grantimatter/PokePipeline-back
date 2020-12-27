@@ -11,7 +11,7 @@ import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
 public class PokemonServiceImpl implements PokemonService {
 	
-	private static Logger log = LogManager.getLogger(CorsFilter.class);
+	private Logger log = LogManager.getLogger(CorsFilter.class);
 	private PokemonDAO pokemonDAO = new PokemonDAOImpl();
 
 	@Override
@@ -39,7 +39,10 @@ public class PokemonServiceImpl implements PokemonService {
 	@Override
 	public boolean updatePokemon(Pokemon pokemon) {
 		boolean isUpdated = false;
-		if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0
+		if (pokemon.getPokemonId() <= 0) {
+			log.warn("Must have id to correctly update database.");
+		}
+		else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0
 				|| pokemon.getMove3API() <= 0 || pokemon.getMove4API() <= 0) {
 			log.warn("Invalid move.");
 		}
@@ -53,6 +56,28 @@ public class PokemonServiceImpl implements PokemonService {
 			isUpdated = pokemonDAO.updatePokemon(pokemon);
 		}
 		return isUpdated;
+	}
+
+	@Override
+	public boolean deletePokemon(Pokemon pokemon) {
+		boolean isDeleted = false;
+		if (pokemon.getPokemonId() <= 0) {
+			log.warn("Must have id to correctly update database.");
+		}
+		else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0
+				|| pokemon.getMove3API() <= 0 || pokemon.getMove4API() <= 0) {
+			log.warn("Invalid move.");
+		}
+		else if (pokemon.getExperience() <= 0) {
+			log.warn("Invalid experience.");
+		}
+		else if (pokemon.getCurrentHP() > 0) {
+			log.warn("Invalid hp amount. (Pokemon is not dead)");
+		}
+		else {
+			isDeleted = pokemonDAO.deletePokemon(pokemon);
+		}
+		return isDeleted;
 	}
 
 }
