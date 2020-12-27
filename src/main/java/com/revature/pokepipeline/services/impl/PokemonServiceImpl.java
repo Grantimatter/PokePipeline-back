@@ -36,4 +36,23 @@ public class PokemonServiceImpl implements PokemonService {
 		return isAdded;
 	}
 
+	@Override
+	public boolean updatePokemon(Pokemon pokemon) {
+		boolean isUpdated = false;
+		if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0
+				|| pokemon.getMove3API() <= 0 || pokemon.getMove4API() <= 0) {
+			log.warn("Invalid move.");
+		}
+		else if (pokemon.getExperience() <= 0) {
+			log.warn("Invalid experience.");
+		}
+		else if (pokemon.getUser() == null) {
+			log.warn("Invalid user.");
+		}
+		else {
+			isUpdated = pokemonDAO.updatePokemon(pokemon);
+		}
+		return isUpdated;
+	}
+
 }

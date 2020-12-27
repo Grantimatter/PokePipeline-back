@@ -24,7 +24,6 @@ public class PokemonDAOImpl implements PokemonDAO {
 			isAdded = true;
 		} catch (Exception e) {
 			System.out.println(e);
-			isAdded = false;
 		} finally {
 			session.close();
 		}
@@ -32,18 +31,21 @@ public class PokemonDAOImpl implements PokemonDAO {
 	}
 
 	@Override
-	public void updatePokemon(Pokemon pokemon) {
+	public boolean updatePokemon(Pokemon pokemon) {
+		boolean isUpdated = false;
 		Session session = HibernateUtility.getSession();
 		Transaction transaction;
 		try {
 			transaction = session.beginTransaction();
 			session.merge(pokemon);
 			transaction.commit();
+			isUpdated = true;
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
 			session.close();
 		}
+		return isUpdated;
 	}
 
 	@Override
