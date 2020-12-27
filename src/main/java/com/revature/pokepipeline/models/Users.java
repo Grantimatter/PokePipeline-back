@@ -2,6 +2,7 @@ package com.revature.pokepipeline.models;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,32 +11,33 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class User {
+public class Users {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
 	
+	@Column(unique=true)
 	private String username;
 	
-	@OneToMany(mappedBy="pokemonId", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
 	private List<Pokemon> pokemonList;
 	
-	@OneToMany(mappedBy="itemId", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
 	private List<Item> itemList;
 	
-	public User() {
+	public Users() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public User(int userId, String username, List<Pokemon> pokemonList, List<Item> itemList) {
+	public Users(int userId, String username, List<Pokemon> pokemonList, List<Item> itemList) {
 		super();
 		this.userId = userId;
 		this.username = username;
 		this.pokemonList = pokemonList;
 		this.itemList = itemList;
 	}
-	public User(String username, List<Pokemon> pokemonList, List<Item> itemList) {
+	public Users(String username, List<Pokemon> pokemonList, List<Item> itemList) {
 		super();
 		this.username = username;
 		this.pokemonList = pokemonList;
@@ -64,7 +66,7 @@ public class User {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		Users other = (Users) obj;
 		if (itemList == null) {
 			if (other.itemList != null)
 				return false;

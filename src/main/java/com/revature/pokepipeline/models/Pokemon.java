@@ -1,9 +1,13 @@
 package com.revature.pokepipeline.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Pokemon {
@@ -20,13 +24,17 @@ public class Pokemon {
 	private int move3API;
 	private int move4API;
 	
+	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL, targetEntity=Users.class)
+	@JoinColumn(name="userId")
+	private Users user;
+	
 	public Pokemon() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public Pokemon(int pokemonId, int pokemonAPI, double currentHP, int exp, int move1api, int move2api, int move3api,
-			int move4api) {
+			int move4api, Users user) {
 		super();
 		this.pokemonId = pokemonId;
 		this.pokemonAPI = pokemonAPI;
@@ -36,9 +44,11 @@ public class Pokemon {
 		move2API = move2api;
 		move3API = move3api;
 		move4API = move4api;
+		this.user = user;
 	}
 
-	public Pokemon(int pokemonAPI, double currentHP, int exp, int move1api, int move2api, int move3api, int move4api) {
+	public Pokemon(int pokemonAPI, double currentHP, int exp, int move1api, int move2api, int move3api, int move4api,
+			Users user) {
 		super();
 		this.pokemonAPI = pokemonAPI;
 		this.currentHP = currentHP;
@@ -47,13 +57,14 @@ public class Pokemon {
 		move2API = move2api;
 		move3API = move3api;
 		move4API = move4api;
+		this.user = user;
 	}
 
 	@Override
 	public String toString() {
 		return "Pokemon [pokemonId=" + pokemonId + ", pokemonAPI=" + pokemonAPI + ", currentHP=" + currentHP + ", exp="
 				+ exp + ", move1API=" + move1API + ", move2API=" + move2API + ", move3API=" + move3API + ", move4API="
-				+ move4API + "]";
+				+ move4API + ", user=" + user + "]";
 	}
 
 	@Override
@@ -70,6 +81,7 @@ public class Pokemon {
 		result = prime * result + move4API;
 		result = prime * result + pokemonAPI;
 		result = prime * result + pokemonId;
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 
@@ -97,6 +109,11 @@ public class Pokemon {
 		if (pokemonAPI != other.pokemonAPI)
 			return false;
 		if (pokemonId != other.pokemonId)
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
 			return false;
 		return true;
 	}
@@ -165,4 +182,13 @@ public class Pokemon {
 		move4API = move4api;
 	}
 
+	public Users getUser() {
+		return user;
+	}
+
+	public void setUser(Users user) {
+		this.user = user;
+	}
+
+	
 }

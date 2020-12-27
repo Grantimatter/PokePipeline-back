@@ -13,7 +13,7 @@
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 		<!-- Hibernate Properties -->
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-		<property name="hibernate.default_schema">hibernate</property>
+		<property name="hibernate.default_schema">pokepipeline</property>
 		<!-- Hibernate console output -->
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.format_sql">true</property>
@@ -21,6 +21,8 @@
 		<property name="hibernate.hbm2ddl.auto">update</property>
 		
 		<!-- We will map our classes here -->
-		<mapping class="com.revature.PokePipeline.models.User"/>
+		<mapping class="com.revature.pokepipeline.models.Users"/>
+		<mapping class="com.revature.pokepipeline.models.Pokemon"/>
+		<mapping class="com.revature.pokepipeline.models.Item"/>
 	</session-factory>
 </hibernate-configuration>
