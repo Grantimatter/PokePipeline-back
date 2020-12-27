@@ -17,8 +17,8 @@ public class Pokemon {
 	private int pokemonId;
 	
 	private int pokemonAPI;
-	private double currentHP;
-	private int exp;
+	private int currentHP;
+	private int experience;
 	private int move1API;
 	private int move2API;
 	private int move3API;
@@ -33,13 +33,13 @@ public class Pokemon {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Pokemon(int pokemonId, int pokemonAPI, double currentHP, int exp, int move1api, int move2api, int move3api,
+	public Pokemon(int pokemonId, int pokemonAPI, int currentHP, int experience, int move1api, int move2api, int move3api,
 			int move4api, Users user) {
 		super();
 		this.pokemonId = pokemonId;
 		this.pokemonAPI = pokemonAPI;
 		this.currentHP = currentHP;
-		this.exp = exp;
+		this.experience = experience;
 		move1API = move1api;
 		move2API = move2api;
 		move3API = move3api;
@@ -47,12 +47,12 @@ public class Pokemon {
 		this.user = user;
 	}
 
-	public Pokemon(int pokemonAPI, double currentHP, int exp, int move1api, int move2api, int move3api, int move4api,
+	public Pokemon(int pokemonAPI, int currentHP, int experience, int move1api, int move2api, int move3api, int move4api,
 			Users user) {
 		super();
 		this.pokemonAPI = pokemonAPI;
 		this.currentHP = currentHP;
-		this.exp = exp;
+		this.experience = experience;
 		move1API = move1api;
 		move2API = move2api;
 		move3API = move3api;
@@ -62,9 +62,9 @@ public class Pokemon {
 
 	@Override
 	public String toString() {
-		return "Pokemon [pokemonId=" + pokemonId + ", pokemonAPI=" + pokemonAPI + ", currentHP=" + currentHP + ", exp="
-				+ exp + ", move1API=" + move1API + ", move2API=" + move2API + ", move3API=" + move3API + ", move4API="
-				+ move4API + ", user=" + user + "]";
+		return "Pokemon [pokemonId=" + pokemonId + ", pokemonAPI=" + pokemonAPI + ", currentHP=" + currentHP + ", experience="
+				+ experience + ", move1API=" + move1API + ", move2API=" + move2API + ", move3API=" + move3API + ", move4API="
+				+ move4API + ", user=" + user.getUsername() + "]";
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class Pokemon {
 		long temp;
 		temp = Double.doubleToLongBits(currentHP);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + exp;
+		result = prime * result + experience;
 		result = prime * result + move1API;
 		result = prime * result + move2API;
 		result = prime * result + move3API;
@@ -96,7 +96,7 @@ public class Pokemon {
 		Pokemon other = (Pokemon) obj;
 		if (Double.doubleToLongBits(currentHP) != Double.doubleToLongBits(other.currentHP))
 			return false;
-		if (exp != other.exp)
+		if (experience != other.experience)
 			return false;
 		if (move1API != other.move1API)
 			return false;
@@ -134,20 +134,20 @@ public class Pokemon {
 		this.pokemonAPI = pokemonAPI;
 	}
 
-	public double getCurrentHP() {
+	public int getCurrentHP() {
 		return currentHP;
 	}
 
-	public void setCurrentHP(double currentHP) {
+	public void setCurrentHP(int currentHP) {
 		this.currentHP = currentHP;
 	}
 
-	public int getExp() {
-		return exp;
+	public int getExperience() {
+		return experience;
 	}
 
-	public void setExp(int exp) {
-		this.exp = exp;
+	public void setExperience(int experience) {
+		this.experience = experience;
 	}
 
 	public int getMove1API() {

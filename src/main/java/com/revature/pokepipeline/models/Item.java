@@ -42,7 +42,7 @@ public class Item {
 
 	@Override
 	public String toString() {
-		return "Item [itemId=" + itemId + ", itemAPI=" + itemAPI + ", user=" + user + "]";
+		return "Item [itemId=" + itemId + ", itemAPI=" + itemAPI + ", user=" + user.getUsername() + "]";
 	}
 
 	@Override

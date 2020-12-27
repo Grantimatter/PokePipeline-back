@@ -44,36 +44,15 @@ public class PokemonDAOImpl implements PokemonDAO {
 
 	@Override
 	public Pokemon getPokemonById(int pokemonId) {
-		Pokemon pokemon = null;
 		Session session = HibernateUtility.getSession();	
-		Transaction transaction;
-		try {
-			transaction = session.beginTransaction();
-			pokemon = session.get(Pokemon.class, pokemonId);
-			transaction.commit();
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			session.close();
-		}
-		return pokemon;
+		return session.get(Pokemon.class, pokemonId);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Pokemon> getAllPokemon() {
-		List<Pokemon> pokemonList = null;
 		Session session = HibernateUtility.getSession();
-		Transaction transaction;
-		try {
-			transaction = session.beginTransaction();
-			pokemonList = session.createQuery("from Pokemon").list();
-			transaction.commit();
-		} catch (Exception e) {
-			System.out.println(e);
-		} finally {
-			session.close();
-		}
+		List<Pokemon> pokemonList = session.createQuery("from Pokemon").list();
 		return pokemonList;
 	}
 
