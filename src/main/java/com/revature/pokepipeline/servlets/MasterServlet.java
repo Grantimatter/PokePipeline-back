@@ -35,6 +35,10 @@ public class MasterServlet extends HttpServlet {
 			pokemonController.addPokemon(req, res);
 			break;
 			
+		case "updatepokemon": // for updating hp/experience
+			pokemonController.updatePokemon(req, res);
+			break;
+			
 		default:
 			break;
 		}
