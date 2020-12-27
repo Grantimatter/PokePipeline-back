@@ -12,18 +12,21 @@ import com.revature.pokepipeline.utility.HibernateUtility;
 public class UserDAOImpl implements UserDAO {
 
 	@Override
-	public void insertUser(Users user) {
+	public boolean insertUser(Users user) {
+		boolean isInserted = false;
 		Session session = HibernateUtility.getSession();
 		Transaction transaction;
 		try {
 			transaction = session.beginTransaction();
 			session.save(user);
 			transaction.commit();
+			isInserted = true;
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
 			session.close();
 		}
+		return isInserted;
 	}
 
 	@Override

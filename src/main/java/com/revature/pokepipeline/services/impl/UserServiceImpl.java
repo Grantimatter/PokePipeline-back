@@ -1,14 +1,19 @@
 package com.revature.pokepipeline.services.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.revature.pokepipeline.daos.UserDAO;
 import com.revature.pokepipeline.daos.impl.UserDAOImpl;
-import com.revature.pokepipeline.models.UserDTO;
 import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.UserService;
 import com.revature.pokepipeline.servlets.filters.CorsFilter;
+import com.revature.pokepipeline.utility.Encoder;
 
 public class UserServiceImpl implements UserService {
 	
@@ -16,37 +21,54 @@ public class UserServiceImpl implements UserService {
 	private UserDAO userDAO = new UserDAOImpl();
 
 	@Override
-	public boolean updateProfile(UserDTO userDTO) {
+	public boolean updateProfile(Users user) throws UnsupportedEncodingException, GeneralSecurityException {
 		boolean isUpdated = false;
-		if (userDTO == null) {
+		if (user == null) {
 			log.warn("Invalid user.");
 		}
-		else if (userDTO.userId <= 0) {
+		else if (user.getUserId() <= 0) {
 			log.warn("Must have id to correctly update database.");
 		}
-		else if (userDTO.username == null || userDTO.username == "") {
+		else if (user.getUsername() == null || user.getUsername() == "") {
 			log.warn("Invalid username.");
 		}
-		else if (userDTO.password == null || userDTO.password == "") {
+		else if (user.getPassword() == null || user.getPassword() == "") {
 			log.warn("Invalid password.");
 		}
-		else if (userDTO.email == null || userDTO.password == "") {
+		else if (user.getEmail() == null || user.getEmail() == "") {
 			log.warn("Invalid email.");
 		}
 		else {
-			Users user = new Users(
-					userDTO.userId,
-					userDTO.username,
-					userDTO.email,
-					userDTO.description,
-					userDTO.profilePicture,
-					null,
-					null
-					);
-// need to update password here as well. is inside userDTO.password here
+			Encoder encoder = new Encoder();
+			String encryptedPassword = Encoder.encrypt(user.getPassword(), encoder.getKey());
+			user.setPassword(encryptedPassword);
 			isUpdated = userDAO.updateUser(user);
 		}
 		return isUpdated;
+	}
+
+	@Override
+	public boolean register(Users user) throws UnsupportedEncodingException, GeneralSecurityException {
+		boolean isRegistered = false;
+		if (user == null) {
+			log.warn("Invalid user.");
+		}
+		else if (user.getUsername() == null || user.getUsername() == "") {
+			log.warn("Invalid username.");
+		}
+		else if (user.getPassword() == null || user.getPassword() == "") {
+			log.warn("Invalid password.");
+		}
+		else if (user.getEmail() == null || user.getEmail() == "") {
+			log.warn("Invalid email.");
+		}
+		else {
+			Encoder encoder = new Encoder();
+			String encryptedPassword = Encoder.encrypt(user.getPassword(), encoder.getKey());
+			user.setPassword(encryptedPassword);
+			isRegistered = userDAO.insertUser(user);
+		}
+		return isRegistered;
 	}
 
 }

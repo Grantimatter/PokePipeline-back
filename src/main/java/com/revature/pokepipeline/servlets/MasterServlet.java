@@ -1,20 +1,27 @@
 package com.revature.pokepipeline.servlets;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.revature.pokepipeline.controllers.AuthController;
 import com.revature.pokepipeline.controllers.PokemonController;
 import com.revature.pokepipeline.controllers.UserController;
+import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
 public class MasterServlet extends HttpServlet {
 	
+	private Logger log = LogManager.getLogger(CorsFilter.class);
 	private final AuthController authController = new AuthController();
 	private final PokemonController pokemonController = new PokemonController();
+	private final UserController userController = new UserController();
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 			throws ServletException, IOException {
@@ -33,20 +40,32 @@ public class MasterServlet extends HttpServlet {
 			authController.logout(req, res);
 			break;
 			
+		case "register":
+			try {
+				userController.register(req, res);
+			} catch (IOException | GeneralSecurityException e) {
+				log.error(e);
+			}
+			break;
+			
 		case "updateprofile":
-			UserController.updateProfile(req, res);
+			try {
+				userController.updateProfile(req, res);
+			} catch (IOException | GeneralSecurityException e) {
+				log.error(e);
+			}
 			break;
 			
 			// pokemon cases
-		case "addpokemon": // for inserting pokemon to db (not updating)
+		case "addpokemon":
 			pokemonController.addPokemon(req, res);
 			break;
 			
-		case "updatepokemon": // for updating hp/experience
+		case "updatepokemon":
 			pokemonController.updatePokemon(req, res);
 			break;
 			
-		case "deletepokemon": // this id probably not needed. maybe just use to clean up database
+		case "deletepokemon": // this probably shouldn't be accessible to the user
 			pokemonController.deletePokemon(req, res);
 			break;
 			

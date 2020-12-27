@@ -2,7 +2,11 @@
 
 create table users (
 	userid serial primary key,
-	username varchar(255) unique
+	username varchar(255),
+	password varchar(255),
+	email varchar(255),
+	description varchar(255),
+	profilePicture bytea
 );
 
 create table item (
