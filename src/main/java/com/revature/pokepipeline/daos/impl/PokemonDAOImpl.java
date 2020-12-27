@@ -13,18 +13,22 @@ import com.revature.pokepipeline.utility.HibernateUtility;
 public class PokemonDAOImpl implements PokemonDAO {
 
 	@Override
-	public void insertPokemon(Pokemon pokemon) {
+	public boolean insertPokemon(Pokemon pokemon) {
+		boolean isAdded = false;
 		Session session = HibernateUtility.getSession();
 		Transaction transaction;
 		try {
 			transaction = session.beginTransaction();
 			session.save(pokemon);
 			transaction.commit();
+			isAdded = true;
 		} catch (Exception e) {
 			System.out.println(e);
+			isAdded = false;
 		} finally {
 			session.close();
 		}
+		return isAdded;
 	}
 
 	@Override
