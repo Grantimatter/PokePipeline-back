@@ -1,8 +1,5 @@
 package com.revature.pokepipeline.servlets.filters;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -11,6 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CorsFilter implements Filter {
 	
@@ -26,13 +26,13 @@ public class CorsFilter implements Filter {
  * before they even reach a Servlet
  */
 
-	private static Logger log = LogManager.getLogger(CorsFilter.class);
+//	private static Logger log = LogManager.getLogger(CorsFilter.class);
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		log.debug("CORS Filter leveraged");
+		System.out.println("CORS Filter leveraged");
 		
 		if(!(response instanceof HttpServletResponse)) {
 			chain.doFilter(request, response);
