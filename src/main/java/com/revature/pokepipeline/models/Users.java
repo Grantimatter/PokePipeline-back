@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 @Entity
 public class Users {
 	
@@ -21,14 +24,17 @@ public class Users {
 	@Column(unique=true)
 	private String username;
 	
+	private String password;
 	private String email;
 	private String description;
 	private byte[] profilePicture;
 	
-	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy="user")
 	private List<Pokemon> pokemonList;
 	
-	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy="user")
 	private List<Item> itemList;
 	
 	public Users() {
@@ -66,6 +72,31 @@ public class Users {
 				+ ", itemList=" + itemList + "]";
 	}
 
+	public Users(int userId, String username, String password, String email, String description, byte[] profilePicture,
+			List<Pokemon> pokemonList, List<Item> itemList) {
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.description = description;
+		this.profilePicture = profilePicture;
+		this.pokemonList = pokemonList;
+		this.itemList = itemList;
+	}
+
+	public Users(String username, String password, String email, String description, byte[] profilePicture,
+			List<Pokemon> pokemonList, List<Item> itemList) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.description = description;
+		this.profilePicture = profilePicture;
+		this.pokemonList = pokemonList;
+		this.itemList = itemList;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -73,6 +104,7 @@ public class Users {
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((itemList == null) ? 0 : itemList.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((pokemonList == null) ? 0 : pokemonList.hashCode());
 		result = prime * result + Arrays.hashCode(profilePicture);
 		result = prime * result + userId;
@@ -103,6 +135,11 @@ public class Users {
 			if (other.itemList != null)
 				return false;
 		} else if (!itemList.equals(other.itemList))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
 			return false;
 		if (pokemonList == null) {
 			if (other.pokemonList != null)
@@ -135,6 +172,14 @@ public class Users {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {
@@ -176,5 +221,7 @@ public class Users {
 	public void setItemList(List<Item> itemList) {
 		this.itemList = itemList;
 	}
+
+	
 	
 }
