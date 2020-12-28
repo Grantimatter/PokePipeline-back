@@ -2,9 +2,9 @@
 
 create table users (
 	userid serial primary key,
-	username varchar(255),
+	username varchar(255) unique not null,
 	password varchar(255),
-	email varchar(255),
+	email varchar(255) not null,
 	description varchar(255),
 	profilePicture bytea
 );

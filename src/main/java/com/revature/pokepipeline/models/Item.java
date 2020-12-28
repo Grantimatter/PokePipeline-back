@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 @Entity
 public class Item {
 	
@@ -18,7 +21,7 @@ public class Item {
 	
 	private int itemAPI;
 	
-	@ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL, targetEntity=Users.class)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL, targetEntity=Users.class)
 	@JoinColumn(name="userId")
 	private Users user;
 	

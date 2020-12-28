@@ -10,6 +10,6 @@ public interface UserDAO {
 	public boolean updateUser(Users user);
 	public Users getUserById(int userId);
 	public List<Users> getAllUsers();
-	// find by username
+	public Users getUserByUsername(String username);
 
 }

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.UserService;
@@ -23,7 +25,7 @@ public class UserController {
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private UserService userService = new UserServiceImpl();
 
-	public void updateProfile(HttpServletRequest req, HttpServletResponse res) throws IOException, GeneralSecurityException {
+	public void updateProfile(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		BufferedReader reader = req.getReader();
 		StringBuilder stringBuilder = new StringBuilder();
 		String line = reader.readLine();
@@ -49,7 +51,7 @@ public class UserController {
 		}
 	}
 
-	public void register(HttpServletRequest req, HttpServletResponse res) throws IOException, GeneralSecurityException {
+	public void register(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		BufferedReader reader = req.getReader();
 		StringBuilder stringBuilder = new StringBuilder();
 		String line = reader.readLine();

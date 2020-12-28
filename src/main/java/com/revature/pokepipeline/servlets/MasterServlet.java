@@ -1,7 +1,6 @@
 package com.revature.pokepipeline.servlets;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -41,19 +40,11 @@ public class MasterServlet extends HttpServlet {
 			break;
 			
 		case "register":
-			try {
-				userController.register(req, res);
-			} catch (IOException | GeneralSecurityException e) {
-				log.error(e);
-			}
+			userController.register(req, res);
 			break;
 			
 		case "updateprofile":
-			try {
-				userController.updateProfile(req, res);
-			} catch (IOException | GeneralSecurityException e) {
-				log.error(e);
-			}
+			userController.updateProfile(req, res);
 			break;
 			
 			// pokemon cases

@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 @Entity
 public class Users {
 	
@@ -26,10 +29,12 @@ public class Users {
 	private String description;
 	private byte[] profilePicture;
 	
-	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy="user")
 	private List<Pokemon> pokemonList;
 	
-	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy="user")
 	private List<Item> itemList;
 	
 	public Users() {
