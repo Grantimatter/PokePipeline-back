@@ -2,6 +2,7 @@ package com.revature.pokepipeline.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,11 +16,10 @@ import com.revature.pokepipeline.models.Pokemon;
 import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.PokemonService;
 import com.revature.pokepipeline.services.impl.PokemonServiceImpl;
-import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
 public class PokemonController {
 	
-	private Logger log = LogManager.getLogger(CorsFilter.class);
+	private Logger log = LogManager.getLogger(PokemonController.class);
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private PokemonService pokemonService = new PokemonServiceImpl();
 
@@ -95,6 +95,26 @@ public class PokemonController {
 			pokemon.setUser(user);
 			if (pokemonService.deletePokemon(pokemon)) {
 				res.setStatus(200);
+				log.info("Successfully deleted Pokemon.");
+			}
+			else {
+				res.setStatus(401);
+				log.warn("Could not delete Pokemon.");
+			}
+		}
+		else {
+			log.warn("Could not locate user.");
+		}
+	}
+
+	public void getPartyByUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		HttpSession httpSession = req.getSession(false);
+		if (httpSession != null) {
+			Users user = (Users) httpSession.getAttribute("user");
+			List<Pokemon> pokemonList = pokemonService.getPartyByUser(user);
+			if (pokemonList.size() > 0) {
+				res.setStatus(200);
+				// insert list into body of response
 				log.info("Successfully deleted Pokemon.");
 			}
 			else {

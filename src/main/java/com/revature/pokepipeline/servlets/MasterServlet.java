@@ -7,17 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.revature.pokepipeline.controllers.AuthController;
 import com.revature.pokepipeline.controllers.PokemonController;
 import com.revature.pokepipeline.controllers.UserController;
-import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
+@SuppressWarnings("serial")
 public class MasterServlet extends HttpServlet {
 	
-	private Logger log = LogManager.getLogger(CorsFilter.class);
 	private final AuthController authController = new AuthController();
 	private final PokemonController pokemonController = new PokemonController();
 	private final UserController userController = new UserController();
@@ -54,6 +50,10 @@ public class MasterServlet extends HttpServlet {
 			
 		case "updatepokemon":
 			pokemonController.updatePokemon(req, res);
+			break;
+			
+		case "getparty":
+			pokemonController.getPartyByUser(req, res);
 			break;
 			
 		case "deletepokemon": // this probably shouldn't be accessible to the user

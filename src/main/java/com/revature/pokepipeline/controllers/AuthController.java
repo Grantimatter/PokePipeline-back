@@ -2,9 +2,7 @@ package com.revature.pokepipeline.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
-import javax.management.relation.Role;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,17 +10,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.UserService;
 import com.revature.pokepipeline.services.impl.UserServiceImpl;
-import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
 public class AuthController {
 	
-	private Logger log = LogManager.getLogger(CorsFilter.class);
+	private Logger log = LogManager.getLogger(AuthController.class);
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private UserService userService = new UserServiceImpl();
 
@@ -38,6 +33,7 @@ public class AuthController {
 		Users user = objectMapper.readValue(body, Users.class);
 		if (userService.login(user)) {
 			HttpSession httpSession = req.getSession();
+			user = userService.getUserByUsername(user.getUsername());
 			httpSession.setAttribute("user", user);
 			res.setStatus(200);
 			log.info(user.getUsername() + " has logged in.");

@@ -6,10 +6,10 @@ import com.revature.pokepipeline.models.Users;
 
 public interface UserDAO {
 	
-	public boolean insertUser(Users user);
-	public boolean updateUser(Users user);
-	public Users getUserById(int userId);
-	public List<Users> getAllUsers();
-	public Users getUserByUsername(String username);
+	boolean insertUser(Users user);
+	boolean updateUser(Users user);
+	Users getUserById(int userId); // untested
+	List<Users> getAllUsers(); // untested
+	Users getUserByUsername(String username);
 
 }

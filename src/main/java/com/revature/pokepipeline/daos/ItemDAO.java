@@ -6,9 +6,9 @@ import com.revature.pokepipeline.models.Item;
 
 public interface ItemDAO {
 	
-	public void insertItem(Item item);
-	public void updateItem(Item item);
-	public Item getItemById(int itemId);
-	public List<Item> getAllItems();
+	void insertItem(Item item); // untested
+	void updateItem(Item item); // untested
+	Item getItemById(int itemId); // untested
+	List<Item> getAllItems(); // untested
 
 }
