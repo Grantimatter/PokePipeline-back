@@ -1,6 +1,6 @@
-package com.revature.PokePipeline.utility;
+package com.revature.pokepipeline.utility;
 
-import com.revature.PokePipeline.model.Type;
+import com.revature.pokepipeline.models.Type;
 
 public class TypeConversions {
 	
