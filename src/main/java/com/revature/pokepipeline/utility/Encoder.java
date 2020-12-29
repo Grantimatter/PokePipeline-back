@@ -15,7 +15,12 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Encoder {
+	
+	private Logger log = LogManager.getLogger(Encoder.class);
 
 	private String password = "admin";
 	private byte[] salt = new String("12345678").getBytes();
@@ -23,6 +28,16 @@ public class Encoder {
 	private int keyLength = 128;
 	private SecretKeySpec key;
 
+	public String encrypt(String password) {
+		String encryptedPassword = null;
+		try {
+			encryptedPassword = encrypt(password, getKey());
+		} catch (UnsupportedEncodingException | GeneralSecurityException e) {
+			log.error(e);
+		}
+		return encryptedPassword;
+	}
+	
 	public Encoder() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		this.key = createSecretKey(password.toCharArray(), salt, iterationCount, keyLength);
 	}

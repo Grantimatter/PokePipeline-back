@@ -21,15 +21,18 @@ public class Driver {
 	public static void main(String[] args) throws UnsupportedEncodingException, GeneralSecurityException {
 		// in case we need to run anything as a java application
 
-		
-		Users topheryun = new Users("topheryun", "pass	", "topheryun@gmail.com", "Pokemon Master!", null, null, null);
-		userService.register(topheryun);
+		Users topheryun = new Users(1, "topheryun", "pass", "topheryun@gmail.com", "Pokemon Master!", null, null, null);
+		topheryun = userService.getUserByUsername("topheryun");
+//		userService.register(topheryun);
 //		userService.updateProfile(topheryun);
+		
 
-		Pokemon pokemon = new Pokemon(2, 2, 0, 16, 1, 2, 3, 4, null);
+		
+		Pokemon pokemon = new Pokemon(1, 19, 1, 1, 2, 3, 4, topheryun);
 //		System.out.println(pokemonService.deletePokemon(pokemon));
 //		System.out.println(userDAO.getUserByUsername("topheryun"));
-
+//		pokemonService.addPokemon(pokemon);
+//		System.out.println(pokemonService.getPartyByUser(topheryun));
 		
 	}
 

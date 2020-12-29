@@ -13,12 +13,11 @@ import com.revature.pokepipeline.daos.UserDAO;
 import com.revature.pokepipeline.daos.impl.UserDAOImpl;
 import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.UserService;
-import com.revature.pokepipeline.servlets.filters.CorsFilter;
 import com.revature.pokepipeline.utility.Encoder;
 
 public class UserServiceImpl implements UserService {
 
-	private Logger log = LogManager.getLogger(CorsFilter.class);
+	private Logger log = LogManager.getLogger(UserServiceImpl.class);
 	private UserDAO userDAO = new UserDAOImpl();
 
 	@Override
@@ -28,11 +27,11 @@ public class UserServiceImpl implements UserService {
 			log.warn("Invalid user.");
 		} else if (user.getUserId() <= 0) {
 			log.warn("Must have id to correctly update database.");
-		} else if (user.getUsername() == null || user.getUsername() == "") {
+		} else if (user.getUsername() == null || user.getUsername().equals("")) {
 			log.warn("Invalid username.");
-		} else if (user.getPassword() == null || user.getPassword() == "") {
+		} else if (user.getPassword() == null || user.getPassword().equals("")) {
 			log.warn("Invalid password.");
-		} else if (user.getEmail() == null || user.getEmail() == "") {
+		} else if (user.getEmail() == null || user.getEmail().equals("")) {
 			log.warn("Invalid email.");
 		} else {
 			Encoder encoder = null;
@@ -41,14 +40,12 @@ public class UserServiceImpl implements UserService {
 			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 				log.error(e);
 			}
-			String encryptedPassword = null;
-			try {
-				encryptedPassword = Encoder.encrypt(user.getPassword(), encoder.getKey());
-			} catch (UnsupportedEncodingException | GeneralSecurityException e) {
-				log.error(e);
-			}
+			String encryptedPassword = encoder.encrypt(user.getPassword());
 			user.setPassword(encryptedPassword);
 			isUpdated = userDAO.updateUser(user);
+		}
+		if (!isUpdated) {
+			log.warn("Could not update profile.");
 		}
 		return isUpdated;
 	}
@@ -58,28 +55,25 @@ public class UserServiceImpl implements UserService {
 		boolean isRegistered = false;
 		if (user == null) {
 			log.warn("Invalid user.");
-		} else if (user.getUsername() == null || user.getUsername() == "") {
+		} else if (user.getUsername() == null || user.getUsername().equals("")) {
 			log.warn("Invalid username.");
-		} else if (user.getPassword() == null || user.getPassword() == "") {
+		} else if (user.getPassword() == null || user.getPassword().equals("")) {
 			log.warn("Invalid password.");
-		} else if (user.getEmail() == null || user.getEmail() == "") {
+		} else if (user.getEmail() == null || user.getEmail().equals("")) {
 			log.warn("Invalid email.");
 		} else {
-
 			Encoder encoder = null;
 			try {
 				encoder = new Encoder();
 			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 				log.error(e);
 			}
-			String encryptedPassword = null;
-			try {
-				encryptedPassword = Encoder.encrypt(user.getPassword(), encoder.getKey());
-			} catch (UnsupportedEncodingException | GeneralSecurityException e) {
-				log.error(e);
-			}
+			String encryptedPassword = encoder.encrypt(user.getPassword());
 			user.setPassword(encryptedPassword);
 			isRegistered = userDAO.insertUser(user);
+		}
+		if (!isRegistered) {
+			log.warn("Could not register user.");
 		}
 		return isRegistered;
 	}
@@ -87,9 +81,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean login(Users user) {
 		boolean isLoggedIn = false;
-		if (user.getUsername() == null || user.getUsername() == "") {
+		if (user == null) {
+			log.warn("Invalid user.");
+		} else if (user.getUsername() == null || user.getUsername().equals("")) {
 			log.warn("Invalid username.");
-		} else if (user.getPassword() == null || user.getPassword() == "") {
+		} else if (user.getPassword() == null || user.getPassword().equals("")) {
 			log.warn("Invalid password.");
 		} else {
 			Users dbUser = userDAO.getUserByUsername(user.getUsername());
@@ -115,7 +111,24 @@ public class UserServiceImpl implements UserService {
 				}
 			}
 		}
+		if (!isLoggedIn) {
+			log.warn("Could not log in.");
+		}
 		return isLoggedIn;
+	}
+
+	@Override
+	public Users getUserByUsername(String username) {
+		Users user = null;
+		if (username.equals("") || username == null) {
+			log.warn("Invalid username.");
+		} else {
+			user = userDAO.getUserByUsername(username);
+		}
+		if (user == null) {
+			log.warn("Could not locate user.");
+		}
+		return user;
 	}
 
 }

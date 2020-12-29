@@ -24,8 +24,6 @@ public class UserDAOImpl implements UserDAO {
 			isInserted = true;
 		} catch (Exception e) {
 			System.out.println(e);
-		} finally {
-			session.close();
 		}
 		return isInserted;
 	}
@@ -42,8 +40,6 @@ public class UserDAOImpl implements UserDAO {
 			isUpdated = true;
 		} catch (Exception e) {
 			System.out.println(e);
-		}finally {
-			session.close();
 		}
 		return isUpdated;
 	}
@@ -76,8 +72,6 @@ public class UserDAOImpl implements UserDAO {
 			transaction.commit();
 		} catch (Exception e) {
 			System.out.println(e);
-		}finally {
-			session.close();
 		}
 		if (user.getUserId() == 0) return null;
 		else return user;

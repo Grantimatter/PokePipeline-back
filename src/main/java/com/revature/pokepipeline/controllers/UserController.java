@@ -2,7 +2,6 @@ package com.revature.pokepipeline.controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,17 +10,14 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.UserService;
 import com.revature.pokepipeline.services.impl.UserServiceImpl;
-import com.revature.pokepipeline.servlets.filters.CorsFilter;
 
 public class UserController {
 	
-	private Logger log = LogManager.getLogger(CorsFilter.class);
+	private Logger log = LogManager.getLogger(UserController.class);
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private UserService userService = new UserServiceImpl();
 

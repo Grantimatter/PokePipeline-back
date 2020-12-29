@@ -23,8 +23,8 @@ public class Users {
 	
 	@Column(unique=true)
 	private String username;
-	
 	private String password;
+	@Column(unique=true)
 	private String email;
 	private String description;
 	private byte[] profilePicture;
