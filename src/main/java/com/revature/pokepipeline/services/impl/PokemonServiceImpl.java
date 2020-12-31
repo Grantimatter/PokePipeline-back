@@ -77,6 +77,8 @@ public class PokemonServiceImpl implements PokemonService {
 			log.warn("Invalid experience.");
 		} else if (pokemon.getCurrentHP() > 0) {
 			log.warn("Invalid hp amount. (Pokemon is not dead)");
+		} else if (pokemon.getUser() == null) {
+			log.warn("Invalid user.");
 		} else {
 			isDeleted = pokemonDAO.deletePokemon(pokemon);
 		}
