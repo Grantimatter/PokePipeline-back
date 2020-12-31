@@ -34,7 +34,7 @@ public class AuthController {
 		if (userService.login(user)) {
 			HttpSession httpSession = req.getSession();
 			user = userService.getUserByUsername(user.getUsername());
-			httpSession.setAttribute("user", user);
+			httpSession.setAttribute("user", user); // storing user object with encrypted password
 			res.setStatus(200);
 			log.info(user.getUsername() + " has logged in.");
 		} else {
