@@ -60,7 +60,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public Users getUserByUsername(String username) {
-		Users user = new Users();
+		Users user = null;
 		Session session = HibernateUtility.getSession();	
 		Transaction transaction;
 		try {
@@ -73,8 +73,7 @@ public class UserDAOImpl implements UserDAO {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		if (user.getUserId() == 0) return null;
-		else return user;
+		return user;
 	}
 
 }
