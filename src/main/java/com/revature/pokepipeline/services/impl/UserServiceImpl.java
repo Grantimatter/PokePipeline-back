@@ -1,7 +1,6 @@
 package com.revature.pokepipeline.services.impl;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -120,7 +119,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Users getUserByUsername(String username) {
 		Users user = null;
-		if (username.equals("") || username == null) {
+		if (username == null || username.equals("")) {
 			log.warn("Invalid username.");
 		} else {
 			user = userDAO.getUserByUsername(username);

@@ -26,3 +26,5 @@ create table pokemon (
 	pokemonapi int4,
 	userid int4 references users(userid)
 );
+
+insert into users values (900, 'username', '4dUltQjwj0H2Hi8apvifJg==:sehF8cLvhpMRZAAoPNj4Eg==', 'user@email.com', '', null);
