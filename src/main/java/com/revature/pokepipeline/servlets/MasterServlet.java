@@ -23,7 +23,7 @@ public class MasterServlet extends HttpServlet {
 		res.setContentType("application/json");
 		res.setStatus(404);
 
-		final String URI = req.getRequestURI().replace("/pokepipeline/", "");
+		final String URI = req.getRequestURI().replace("/PokePipeline/", "");
 		
 		// user cases
 		switch (URI) {
