@@ -21,7 +21,7 @@ public class MasterServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 			throws ServletException, IOException {
 		res.setContentType("application/json");
-		res.setStatus(404);
+		res.setStatus(405);
 
 		final String URI = req.getRequestURI().replace("/PokePipeline/", "");
 		
