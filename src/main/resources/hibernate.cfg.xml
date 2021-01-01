@@ -7,8 +7,6 @@
 <hibernate-configuration>
 	<session-factory>
 		<!-- JDBC Configuration -->
-		<property name="hibernate.connection.username">postgres</property>
-		<property name="hibernate.connection.password">password</property>
 		<property name="hibernate.connection.url">jdbc:postgresql://javafs-project1-ers.c8wdizklabfu.us-east-2.rds.amazonaws.com:5432/postgres</property>
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 		<!-- Hibernate Properties -->
