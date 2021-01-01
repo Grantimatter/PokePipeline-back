@@ -12,7 +12,14 @@ public class HibernateUtility {
 	public static Session getSession() {
 		if (ses == null) {
 			ses = sf.openSession();
+			Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+			configuration.setProperty("hibernate.connection.username", System.getenv("postgresUsername"));
+			configuration.setProperty("hibernate.connection.password", System.getenv("awsPassword"));
+			sf = configuration.buildSessionFactory();
+			ses = sf.openSession();
 		}
+		Configuration cf = new Configuration();
+		cf.setProperty("hibernate.connection.password", System.getenv("awsPassword"));
 		return ses;
 	}
 	
