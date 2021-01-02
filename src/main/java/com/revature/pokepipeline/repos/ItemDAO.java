@@ -1,4 +1,4 @@
-package com.revature.pokepipeline.daos;
+package com.revature.pokepipeline.repos;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ public interface ItemDAO {
 	
 	void insertItem(Item item); // untested
 	void updateItem(Item item); // untested
+	void deleteItem(Item item); // untested
 	Item getItemById(int itemId); // untested
 	List<Item> getAllItems(); // untested
 

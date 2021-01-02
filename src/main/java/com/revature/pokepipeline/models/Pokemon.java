@@ -1,5 +1,13 @@
 package com.revature.pokepipeline.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,11 +16,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="POKEMON")
+@NoArgsConstructor @AllArgsConstructor @Getter @Setter @ToString
 public class Pokemon {
 	
 	@Id
@@ -27,48 +35,10 @@ public class Pokemon {
 	private int move3API;
 	private int move4API;
 	
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL, targetEntity=Users.class)
-	@JoinColumn(name="userId")
-	private Users user;
-	
-	public Pokemon() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public Pokemon(int pokemonId, int pokemonAPI, int currentHP, int experience, int move1api, int move2api, int move3api,
-			int move4api, Users user) {
-		super();
-		this.pokemonId = pokemonId;
-		this.pokemonAPI = pokemonAPI;
-		this.currentHP = currentHP;
-		this.experience = experience;
-		move1API = move1api;
-		move2API = move2api;
-		move3API = move3api;
-		move4API = move4api;
-		this.user = user;
-	}
-
-	public Pokemon(int pokemonAPI, int currentHP, int experience, int move1api, int move2api, int move3api, int move4api,
-			Users user) {
-		super();
-		this.pokemonAPI = pokemonAPI;
-		this.currentHP = currentHP;
-		this.experience = experience;
-		move1API = move1api;
-		move2API = move2api;
-		move3API = move3api;
-		move4API = move4api;
-		this.user = user;
-	}
-
-	@Override
-	public String toString() {
-		return "Pokemon [pokemonId=" + pokemonId + ", pokemonAPI=" + pokemonAPI + ", currentHP=" + currentHP + ", experience="
-				+ experience + ", move1API=" + move1API + ", move2API=" + move2API + ", move3API=" + move3API + ", move4API="
-				+ move4API + ", user=" + user.getUsername() + "]";
-	}
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL, targetEntity= Trainer.class)
+	@JoinColumn(name="trainerId")
+	@JsonManagedReference
+	private Trainer trainer;
 
 	@Override
 	public int hashCode() {
@@ -84,7 +54,7 @@ public class Pokemon {
 		result = prime * result + move4API;
 		result = prime * result + pokemonAPI;
 		result = prime * result + pokemonId;
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + ((trainer == null) ? 0 : trainer.hashCode());
 		return result;
 	}
 
@@ -113,85 +83,11 @@ public class Pokemon {
 			return false;
 		if (pokemonId != other.pokemonId)
 			return false;
-		if (user == null) {
-			if (other.user != null)
+		if (trainer == null) {
+			if (other.trainer != null)
 				return false;
-		} else if (!user.equals(other.user))
+		} else if (!trainer.equals(other.trainer))
 			return false;
 		return true;
 	}
-
-	public int getPokemonId() {
-		return pokemonId;
-	}
-
-	public void setPokemonId(int pokemonId) {
-		this.pokemonId = pokemonId;
-	}
-
-	public int getPokemonAPI() {
-		return pokemonAPI;
-	}
-
-	public void setPokemonAPI(int pokemonAPI) {
-		this.pokemonAPI = pokemonAPI;
-	}
-
-	public int getCurrentHP() {
-		return currentHP;
-	}
-
-	public void setCurrentHP(int currentHP) {
-		this.currentHP = currentHP;
-	}
-
-	public int getExperience() {
-		return experience;
-	}
-
-	public void setExperience(int experience) {
-		this.experience = experience;
-	}
-
-	public int getMove1API() {
-		return move1API;
-	}
-
-	public void setMove1API(int move1api) {
-		move1API = move1api;
-	}
-
-	public int getMove2API() {
-		return move2API;
-	}
-
-	public void setMove2API(int move2api) {
-		move2API = move2api;
-	}
-
-	public int getMove3API() {
-		return move3API;
-	}
-
-	public void setMove3API(int move3api) {
-		move3API = move3api;
-	}
-
-	public int getMove4API() {
-		return move4API;
-	}
-
-	public void setMove4API(int move4api) {
-		move4API = move4api;
-	}
-
-	public Users getUser() {
-		return user;
-	}
-
-	public void setUser(Users user) {
-		this.user = user;
-	}
-
-	
 }

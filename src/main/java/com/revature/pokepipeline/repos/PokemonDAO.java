@@ -1,15 +1,16 @@
-package com.revature.pokepipeline.services;
+package com.revature.pokepipeline.repos;
 
 import java.util.List;
 
 import com.revature.pokepipeline.models.Pokemon;
 import com.revature.pokepipeline.models.Trainer;
 
-public interface PokemonService {
-
-	void addPokemon(Pokemon pokemon);
-	void updatePokemon(Pokemon pokemon);
-	Pokemon getPokemonById(int id);
-	void deletePokemon(Pokemon pokemon);
+public interface PokemonDAO {
 	
+	void insertPokemon(Pokemon pokemon);
+	void updatePokemon(Pokemon pokemon);
+	void deletePokemon(Pokemon pokemon);
+
+	Pokemon getPokemonById(int id);
+
 }
