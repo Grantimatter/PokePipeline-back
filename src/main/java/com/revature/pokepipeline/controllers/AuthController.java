@@ -1,20 +1,13 @@
 package com.revature.pokepipeline.controllers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.revature.pokepipeline.utility.SessionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.Trainer;
 import com.revature.pokepipeline.services.TrainerService;
-import com.revature.pokepipeline.services.impl.TrainerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +17,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -39,10 +35,10 @@ public class AuthController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Trainer> login(HttpServletRequest req, @RequestBody Trainer trainer) throws IOException {
+	public ResponseEntity<Trainer> login(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
 		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
 		if (trainerService.login(trainer, sessionTrainer) != null && sessionTrainer == null) {
-			trainer = trainerService.getTrainerByTrainerName(trainer.getTrainerName());
+			trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
 			if(trainer != null && SessionUtil.setupLoginSession(req, trainer)){
 				return ResponseEntity.status(HttpStatus.FOUND).body(trainer);
 			}
@@ -60,8 +56,13 @@ public class AuthController {
 
 	@PutMapping
 	public ResponseEntity<String> logout(HttpServletRequest req) {
-		req.getSession(false).invalidate();
-		return ResponseEntity.status(HttpStatus.OK).body("logout");
+		HttpSession session = req.getSession(false);
+		if(session != null){
+			session.invalidate();
+			return ResponseEntity.status(HttpStatus.OK).body("logout");
+		}
+		log.warn("User tried logging out, but was not logged in");
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 }

@@ -29,7 +29,7 @@ public class SessionUtil {
                 Trainer trainer = (Trainer) session.getAttribute("trainerLoggedIn");
 
                 if (trainer != null) {
-                    log.info(String.format("Trainer \"%s\" retrieved from session", trainer.getEmail()));
+                    log.info(String.format("Trainer \"%s\" retrieved from session", trainer.getTrainerName()));
                     return trainer;
                 } else {
                     session.invalidate();

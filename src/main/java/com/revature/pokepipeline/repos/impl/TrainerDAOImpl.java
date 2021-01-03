@@ -2,26 +2,29 @@ package com.revature.pokepipeline.repos.impl;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
-import com.revature.pokepipeline.repos.TrainerDAO;
-import com.revature.pokepipeline.models.Trainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
+
+import com.revature.pokepipeline.repos.TrainerDAO;
+import com.revature.pokepipeline.models.Trainer;
 
 @Repository @Transactional
 public class TrainerDAOImpl implements TrainerDAO {
 
-	private SessionFactory sessionFactory;
+	private static final Logger log = LogManager.getLogger(TrainerDAOImpl.class);
+	private final SessionFactory sessionFactory;
 
 	@Autowired
 	public TrainerDAOImpl(SessionFactory sessionFactory){
@@ -31,7 +34,7 @@ public class TrainerDAOImpl implements TrainerDAO {
 	@Override
 	public void insertTrainer(Trainer trainer) {
 		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(trainer);
+		session.save(trainer);
 	}
 
 	@Override
@@ -54,14 +57,20 @@ public class TrainerDAOImpl implements TrainerDAO {
 	}
 
 	@Override
-	public Trainer getTrainerByTrainerName(String trainerName) {
+	public Trainer getTrainerByTrainerNameOrEmail(String trainerName, String email) {
 		Session session = sessionFactory.getCurrentSession();
 		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 		CriteriaQuery<Trainer> criteriaQuery = criteriaBuilder.createQuery(Trainer.class);
 		Root<Trainer> trainer = criteriaQuery.from(Trainer.class);
 		Predicate trainerNamePredicate = criteriaBuilder.equal(trainer.get("trainerName"), trainerName);
-		criteriaQuery.where(trainerNamePredicate);
-		return session.createQuery(criteriaQuery).getSingleResult();
+		Predicate trainerEmailPredicate = criteriaBuilder.equal(trainer.get("email"), email);
+		criteriaQuery.having(trainerNamePredicate, trainerEmailPredicate);
+		try {
+			return session.createQuery(criteriaQuery).getSingleResult();
+		}catch(NoResultException e){
+			log.warn("No results found for the query");
+			return null;
+		}
 	}
 
 }

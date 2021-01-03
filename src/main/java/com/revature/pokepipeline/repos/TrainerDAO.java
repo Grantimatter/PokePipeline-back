@@ -10,6 +10,6 @@ public interface TrainerDAO {
 	void updateTrainer(Trainer trainer);
 	Trainer getTrainerById(int trainerId); // untested
 	List<Trainer> getAllTrainers(); // untested
-	Trainer getTrainerByTrainerName(String username);
+	Trainer getTrainerByTrainerNameOrEmail(String username, String email);
 
 }

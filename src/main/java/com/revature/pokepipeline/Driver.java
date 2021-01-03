@@ -6,6 +6,8 @@ import java.security.GeneralSecurityException;
 import com.revature.pokepipeline.repos.TrainerDAO;
 import com.revature.pokepipeline.services.PokemonService;
 import com.revature.pokepipeline.services.TrainerService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Driver {
 	
@@ -14,6 +16,12 @@ public class Driver {
 	private static TrainerDAO trainerDAO;
 
 	public static void main(String[] args) throws UnsupportedEncodingException, GeneralSecurityException {
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+		TrainerDAO trainerDAO = applicationContext.getBean(TrainerDAO.class);
+
+
+
 		// in case we need to run anything as a java application
 
 //		Trainer topheryun = new Trainer(1, "topheryun", "pass", "topheryun@gmail.com", "Pokemon Master!", null, null, null);

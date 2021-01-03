@@ -1,36 +1,37 @@
 package com.revature.pokepipeline.controllers;
 
-import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokepipeline.models.dto.TrainerDTO;
+import com.revature.pokepipeline.services.TrainerService;
 import com.revature.pokepipeline.utility.SessionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.revature.pokepipeline.models.Trainer;
-import com.revature.pokepipeline.services.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@ResponseBody
-@RequestMapping(value = "/trainer")
+import com.revature.pokepipeline.models.Trainer;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+
+@RestController
+@RequestMapping(value = "/trainer", consumes = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
 public class TrainerController {
 
-    private Logger log = LogManager.getLogger(TrainerController.class);
-    private TrainerService trainerService;
+    private final Logger log = LogManager.getLogger(TrainerController.class);
+    private final TrainerService trainerService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public TrainerController(TrainerService trainerService) {
@@ -38,13 +39,14 @@ public class TrainerController {
     }
 
     @PutMapping
-    public ResponseEntity<Trainer> updateProfile(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
-        HttpSession httpSession = req.getSession(false);
+    public ResponseEntity<Trainer> updateProfile(@RequestBody TrainerDTO trainerDTO, HttpServletRequest req) {
         Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
+        Trainer trainer = objectMapper.convertValue(trainerDTO, Trainer.class);
         if (sessionTrainer != null) {
-            log.debug(String.format("Attempting to update %s with new data %s", sessionTrainer.getTrainerName(), trainer));
+            String message = String.format("Attempting to update %s with new data %s", sessionTrainer.getTrainerName(), trainer);
+            log.debug(message);
             trainerService.updateProfile(trainer, sessionTrainer);
-            trainer = trainerService.getTrainerByTrainerName(trainer.getTrainerName());
+            trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
             if(trainer != null){
                 log.info("Successfully updated trainer profile.");
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(trainer);
@@ -55,17 +57,22 @@ public class TrainerController {
     }
 
     @PostMapping
-    public ResponseEntity<Trainer> register(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
-        log.debug("Entered Post");
-        /*
-        HttpSession httpSession = req.getSession(false);
+    public ResponseEntity<Trainer> register(@RequestBody TrainerDTO trainerDTO, HttpServletRequest req) throws IOException {
+        Trainer trainer = objectMapper.convertValue(trainerDTO, Trainer.class);
+        if(trainer != null){
+            String message = String.format("Trainer DTO received: %s", trainer);
+            log.info(message);
+        }else{
+            log.debug("No Trainer DTO Detected");
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        }
         Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
-        if (httpSession != null && sessionTrainer == null) {
-        log.debug("Attempting to register trainer: " + trainer);
+        if (sessionTrainer == null) {
             trainerService.register(trainer);
-            trainer = trainerService.getTrainerByTrainerName(trainer.getTrainerName());
+            trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
             if(trainer != null){
                 log.info("Successfully registered.");
+                SessionUtil.setupLoginSession(req, trainer);
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(trainer);
             }else{
                 log.error("Error creating user");
@@ -75,7 +82,7 @@ public class TrainerController {
             log.warn("User already logged in");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
-*/
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

@@ -7,8 +7,8 @@ import com.revature.pokepipeline.models.Trainer;
 
 public interface PokemonDAO {
 	
-	void insertPokemon(Pokemon pokemon);
-	void updatePokemon(Pokemon pokemon);
+	Pokemon insertPokemon(Pokemon pokemon);
+	Pokemon updatePokemon(Pokemon pokemon);
 	void deletePokemon(Pokemon pokemon);
 
 	Pokemon getPokemonById(int id);

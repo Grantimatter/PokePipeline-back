@@ -8,12 +8,13 @@ import java.security.spec.InvalidKeySpecException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.revature.pokepipeline.repos.TrainerDAO;
 import com.revature.pokepipeline.models.Trainer;
 import com.revature.pokepipeline.services.TrainerService;
 import com.revature.pokepipeline.utility.Encoder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class TrainerServiceImpl implements TrainerService {
@@ -30,17 +31,11 @@ public class TrainerServiceImpl implements TrainerService {
         if (trainer == null) {
             log.warn("Invalid trainer.");
             return false;
-        } else if (trainer.getTrainerId() <= 0) {
-            log.warn("Must have id to correctly update database.");
-            return false;
-        } else if (trainer.getTrainerName() == null || trainer.getTrainerName().equals("")) {
+        }else if (trainer.getTrainerName() == null || trainer.getTrainerName().equals("")) {
             log.warn("Invalid trainername.");
             return false;
         } else if (trainer.getPassword() == null || trainer.getPassword().equals("")) {
             log.warn("Invalid password.");
-            return false;
-        } else if (trainer.getEmail() == null || trainer.getEmail().equals("")) {
-            log.warn("Invalid email.");
             return false;
         }
         return true;
@@ -48,7 +43,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer updateProfile(Trainer trainer, Trainer sessionTrainer) {
-        if (isValidTrainer(trainer) && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
+        if (isValidTrainer(trainer) && trainer.getTrainerId() <= 0 && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
             Encoder encoder = null;
             try {
                 encoder = new Encoder();
@@ -58,7 +53,7 @@ public class TrainerServiceImpl implements TrainerService {
             String encryptedPassword = encoder.encrypt(trainer.getPassword());
             trainer.setPassword(encryptedPassword);
             trainerDAO.updateTrainer(trainer);
-            trainer = trainerDAO.getTrainerByTrainerName(trainer.getTrainerName());
+            trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
             return trainer;
         }
         return null;
@@ -66,15 +61,12 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer register(Trainer trainer) {
-        if (trainer == null) {
-            log.warn("Invalid trainer.");
-        } else if (trainer.getTrainerName() == null || trainer.getTrainerName().equals("")) {
-            log.warn("Invalid trainername.");
-        } else if (trainer.getPassword() == null || trainer.getPassword().equals("")) {
-            log.warn("Invalid password.");
-        } else if (trainer.getEmail() == null || trainer.getEmail().equals("")) {
-            log.warn("Invalid email.");
-        } else {
+        if (isValidTrainer(trainer) && trainer.getEmail() != null && !trainer.getEmail().equals("")) {
+            Trainer existingTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
+            if(existingTrainer!= null){
+                log.warn("Trainer already exists!");
+                return null;
+            }
             Encoder encoder = null;
             try {
                 encoder = new Encoder();
@@ -84,7 +76,7 @@ public class TrainerServiceImpl implements TrainerService {
             String encryptedPassword = encoder.encrypt(trainer.getPassword());
             trainer.setPassword(encryptedPassword);
             trainerDAO.insertTrainer(trainer);
-            trainer = trainerDAO.getTrainerByTrainerName(trainer.getTrainerName());
+            trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
             return trainer;
         }
         return null;
@@ -92,11 +84,11 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer login(Trainer trainer, Trainer sessionTrainer) {
-        if(isValidTrainer(trainer) && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
-            Trainer dbTrainer = trainerDAO.getTrainerByTrainerName(trainer.getTrainerName());
+        Trainer dbTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
+        if(isValidTrainer(trainer) && sessionTrainer == null) {
 
             if (dbTrainer == null) {
-                log.warn("Could not locate trainer.");
+                log.warn("Could not locate trainer account.");
             } else {
                 Encoder encoder = null;
                 try {
@@ -122,12 +114,12 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Trainer getTrainerByTrainerName(String trainerName) {
+    public Trainer getTrainerByTrainerNameOrEmail(String trainerName, String email) {
         Trainer trainer = null;
         if (trainerName == null || trainerName.equals("")) {
             log.warn("Invalid trainerName.");
         } else {
-            trainer = trainerDAO.getTrainerByTrainerName(trainerName);
+            trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainerName, email);
         }
         if (trainer == null) {
             log.warn("Could not locate trainer.");

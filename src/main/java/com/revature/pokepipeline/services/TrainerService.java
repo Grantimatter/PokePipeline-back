@@ -7,6 +7,6 @@ public interface TrainerService {
 	Trainer register(Trainer trainer);
 	Trainer updateProfile(Trainer trainer, Trainer sessionTrainer);
 	Trainer login(Trainer trainer, Trainer sessionTrainer);
-	Trainer getTrainerByTrainerName(String username);
+	Trainer getTrainerByTrainerNameOrEmail(String username, String email);
 
 }

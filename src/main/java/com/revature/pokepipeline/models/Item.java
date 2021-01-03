@@ -1,14 +1,11 @@
 package com.revature.pokepipeline.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,20 +15,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name="ITEM")
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter @EqualsAndHashCode @ToString
+@Data @AllArgsConstructor @NoArgsConstructor
 public class Item {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int itemId;
 
-	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.ALL, targetEntity= Trainer.class)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="trainerId")
-	@JsonManagedReference
+	@JsonBackReference
 	private Trainer trainer;
 
+	@Column
 	private int itemAPI;
 }

@@ -1,31 +1,29 @@
 package com.revature.pokepipeline.services.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.revature.pokepipeline.repos.TrainerDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.revature.pokepipeline.repos.PokemonDAO;
-import com.revature.pokepipeline.repos.impl.PokemonDAOImpl;
-import com.revature.pokepipeline.models.Pokemon;
-import com.revature.pokepipeline.models.Trainer;
-import com.revature.pokepipeline.services.PokemonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import com.revature.pokepipeline.repos.PokemonDAO;
+import com.revature.pokepipeline.models.Pokemon;
+import com.revature.pokepipeline.services.PokemonService;
+
+import java.util.List;
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
 
 	private Logger log = LogManager.getLogger(PokemonServiceImpl.class);
 	private PokemonDAO pokemonDAO;
+	private TrainerDAO trainerDAO;
 
 	@Autowired
-	public PokemonServiceImpl(PokemonDAO pokemonDAO){
+	public PokemonServiceImpl(PokemonDAO pokemonDAO, TrainerDAO trainerDAO) {
 		this.pokemonDAO = pokemonDAO;
+		this.trainerDAO = trainerDAO;
 	}
 
 	public boolean isValidPokemon(Pokemon pokemon){
@@ -36,7 +34,7 @@ public class PokemonServiceImpl implements PokemonService {
 				|| pokemon.getMove4API() <= 0) {
 			log.warn("Invalid move.");
 			return false;
-		} else if (pokemon.getExperience() <= 0) {
+		} else if (pokemon.getExperience() < 0) {
 			log.warn("Invalid experience.");
 			return false;
 		} else if (pokemon.getCurrentHP() <= 0) {
@@ -50,22 +48,17 @@ public class PokemonServiceImpl implements PokemonService {
 	}
 
 	@Override
-	public Pokemon addPokemon(Pokemon pokemon) {
+	public List<Pokemon> addPokemon(Pokemon pokemon) {
 		if(isValidPokemon(pokemon)) {
-			pokemonDAO.insertPokemon(pokemon);
-			return pokemonDAO.getPokemon(pokemon);
+			pokemon = pokemonDAO.insertPokemon(pokemon);
+			return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
 		}
 		return null;
 	}
 
 	@Override
 	public Pokemon updatePokemon(Pokemon pokemon) {
-		if(isValidPokemon(pokemon)) {
-			pokemonDAO.updatePokemon(pokemon);
-			pokemon = pokemonDAO.getPokemon(pokemon);
-			return pokemon;
-		}
-		return null;
+		return pokemonDAO.updatePokemon(pokemon);
 	}
 
 	@Override
@@ -79,7 +72,7 @@ public class PokemonServiceImpl implements PokemonService {
 	}
 
 	@Override
-	public void deletePokemon(Pokemon pokemon) {
+	public List<Pokemon> deletePokemon(Pokemon pokemon) {
 		boolean isDeleted = false;
 		if (pokemon == null) {
 			log.warn("Invaid pokemon.");
@@ -100,5 +93,7 @@ public class PokemonServiceImpl implements PokemonService {
 		if (!isDeleted) {
 			log.warn("Could not delete Pokemon.");
 		}
+
+		return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
 	}
 }
