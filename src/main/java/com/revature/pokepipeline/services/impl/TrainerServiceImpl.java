@@ -115,12 +115,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer getTrainerByTrainerNameOrEmail(String trainerName, String email) {
-        Trainer trainer = null;
-        if (trainerName == null || trainerName.equals("")) {
-            log.warn("Invalid trainerName.");
-        } else {
-            trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainerName, email);
-        }
+        Trainer trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainerName, email);
         if (trainer == null) {
             log.warn("Could not locate trainer.");
         }

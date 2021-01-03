@@ -26,7 +26,7 @@ public class PokemonServiceImpl implements PokemonService {
 		this.trainerDAO = trainerDAO;
 	}
 
-	public boolean isValidPokemon(Pokemon pokemon){
+	public boolean isValidPokemon(Pokemon pokemon) {
 		if (pokemon == null) {
 			log.warn("Invalid pokemon.");
 			return false;
@@ -49,7 +49,7 @@ public class PokemonServiceImpl implements PokemonService {
 
 	@Override
 	public List<Pokemon> addPokemon(Pokemon pokemon) {
-		if(isValidPokemon(pokemon)) {
+		if (isValidPokemon(pokemon)) {
 			pokemon = pokemonDAO.insertPokemon(pokemon);
 			return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
 		}
@@ -73,27 +73,15 @@ public class PokemonServiceImpl implements PokemonService {
 
 	@Override
 	public List<Pokemon> deletePokemon(Pokemon pokemon) {
-		boolean isDeleted = false;
-		if (pokemon == null) {
-			log.warn("Invaid pokemon.");
+		if (!isValidPokemon(pokemon)) {
+			return null;
 		} else if (pokemon.getPokemonId() <= 0) {
-			log.warn("Must have id to correctly update database.");
-		} else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0 || pokemon.getMove3API() <= 0
-				|| pokemon.getMove4API() <= 0) {
-			log.warn("Invalid move.");
-		} else if (pokemon.getExperience() <= 0) {
-			log.warn("Invalid experience.");
-		} else if (pokemon.getCurrentHP() > 0) {
-			log.warn("Invalid hp amount. (Pokemon is not dead)");
-		} else if (pokemon.getTrainer() == null) {
-			log.warn("Invalid user.");
+			log.warn("Must have valid id to correctly update database.");
+			return null;
 		} else {
 			pokemonDAO.deletePokemon(pokemon);
+			log.info("Pokemon deleted.");
 		}
-		if (!isDeleted) {
-			log.warn("Could not delete Pokemon.");
-		}
-
 		return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
 	}
 }
