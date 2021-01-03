@@ -38,6 +38,12 @@ public class PokemonDAOImpl implements PokemonDAO {
 	}
 
 	@Override
+	public Pokemon getPokemon(Pokemon pokemon) {
+		Session session = sessionFactory.getCurrentSession();
+		return session.find(Pokemon.class, pokemon);
+	}
+
+	@Override
 	public void updatePokemon(Pokemon pokemon) {
 		Session session = sessionFactory.getCurrentSession();
 		session.update(pokemon);

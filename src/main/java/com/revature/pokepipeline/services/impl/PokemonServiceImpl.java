@@ -30,7 +30,7 @@ public class PokemonServiceImpl implements PokemonService {
 
 	public boolean isValidPokemon(Pokemon pokemon){
 		if (pokemon == null) {
-			log.warn("Invaid pokemon.");
+			log.warn("Invalid pokemon.");
 			return false;
 		} else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0 || pokemon.getMove3API() <= 0
 				|| pokemon.getMove4API() <= 0) {
@@ -50,18 +50,32 @@ public class PokemonServiceImpl implements PokemonService {
 	}
 
 	@Override
-	public void addPokemon(Pokemon pokemon) {
-		if(isValidPokemon(pokemon)) pokemonDAO.insertPokemon(pokemon);
+	public Pokemon addPokemon(Pokemon pokemon) {
+		if(isValidPokemon(pokemon)) {
+			pokemonDAO.insertPokemon(pokemon);
+			return pokemonDAO.getPokemon(pokemon);
+		}
+		return null;
 	}
 
 	@Override
-	public void updatePokemon(Pokemon pokemon) {
-		if(isValidPokemon(pokemon)) pokemonDAO.updatePokemon(pokemon);
+	public Pokemon updatePokemon(Pokemon pokemon) {
+		if(isValidPokemon(pokemon)) {
+			pokemonDAO.updatePokemon(pokemon);
+			pokemon = pokemonDAO.getPokemon(pokemon);
+			return pokemon;
+		}
+		return null;
 	}
 
 	@Override
 	public Pokemon getPokemonById(int id) {
 		return pokemonDAO.getPokemonById(id);
+	}
+
+	@Override
+	public Pokemon getPokemon(Pokemon pokemon) {
+		return pokemonDAO.getPokemon(pokemon);
 	}
 
 	@Override

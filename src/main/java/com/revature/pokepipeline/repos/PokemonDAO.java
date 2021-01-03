@@ -12,5 +12,6 @@ public interface PokemonDAO {
 	void deletePokemon(Pokemon pokemon);
 
 	Pokemon getPokemonById(int id);
+	Pokemon getPokemon(Pokemon pokemon);
 
 }

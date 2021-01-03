@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -22,22 +21,17 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="TRAINERS")
-@NoArgsConstructor @AllArgsConstructor @Getter @Setter @ToString
 public class Trainer {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@NonNull
 	private int trainerId;
 	
 	@Column(unique=true, nullable = false)
-	@NonNull
 	private String trainerName;
 	@Column(unique=true, nullable = false)
-	@NonNull
 	private String email;
 	@Column(nullable = false)
-	@NonNull
 	private String password;
 	private String description;
 	private byte[] profilePicture;
@@ -49,6 +43,84 @@ public class Trainer {
 	@OneToMany(mappedBy="trainer", fetch = FetchType.LAZY)
 	@JsonManagedReference
 	private List<Item> itemList;
+
+	public Trainer() {
+	}
+
+	public Trainer(int trainerId, String trainerName, String email, String password, String description, byte[] profilePicture, List<Pokemon> pokemonList, List<Item> itemList) {
+		this.trainerId = trainerId;
+		this.trainerName = trainerName;
+		this.email = email;
+		this.password = password;
+		this.description = description;
+		this.profilePicture = profilePicture;
+		this.pokemonList = pokemonList;
+		this.itemList = itemList;
+	}
+
+	public int getTrainerId() {
+		return trainerId;
+	}
+
+	public void setTrainerId(int trainerId) {
+		this.trainerId = trainerId;
+	}
+
+	public String getTrainerName() {
+		return trainerName;
+	}
+
+	public void setTrainerName(String trainerName) {
+		this.trainerName = trainerName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public byte[] getProfilePicture() {
+		return profilePicture;
+	}
+
+	public void setProfilePicture(byte[] profilePicture) {
+		this.profilePicture = profilePicture;
+	}
+
+	public List<Pokemon> getPokemonList() {
+		return pokemonList;
+	}
+
+	public void setPokemonList(List<Pokemon> pokemonList) {
+		this.pokemonList = pokemonList;
+	}
+
+	public List<Item> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<Item> itemList) {
+		this.itemList = itemList;
+	}
 
 	@Override
 	public int hashCode() {
@@ -109,5 +181,19 @@ public class Trainer {
 		} else if (!trainerName.equals(other.trainerName))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Trainer{" +
+				"trainerId=" + trainerId +
+				", trainerName='" + trainerName + '\'' +
+				", email='" + email + '\'' +
+				", password='" + password + '\'' +
+				", description='" + description + '\'' +
+				", profilePicture=" + Arrays.toString(profilePicture) +
+				", pokemonList=" + pokemonList +
+				", itemList=" + itemList +
+				'}';
 	}
 }

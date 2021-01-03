@@ -47,7 +47,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void updateProfile(Trainer trainer, Trainer sessionTrainer) {
+    public Trainer updateProfile(Trainer trainer, Trainer sessionTrainer) {
         if (isValidTrainer(trainer) && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
             Encoder encoder = null;
             try {
@@ -58,11 +58,14 @@ public class TrainerServiceImpl implements TrainerService {
             String encryptedPassword = encoder.encrypt(trainer.getPassword());
             trainer.setPassword(encryptedPassword);
             trainerDAO.updateTrainer(trainer);
+            trainer = trainerDAO.getTrainerByTrainerName(trainer.getTrainerName());
+            return trainer;
         }
+        return null;
     }
 
     @Override
-    public void register(Trainer trainer) {
+    public Trainer register(Trainer trainer) {
         if (trainer == null) {
             log.warn("Invalid trainer.");
         } else if (trainer.getTrainerName() == null || trainer.getTrainerName().equals("")) {
@@ -81,7 +84,10 @@ public class TrainerServiceImpl implements TrainerService {
             String encryptedPassword = encoder.encrypt(trainer.getPassword());
             trainer.setPassword(encryptedPassword);
             trainerDAO.insertTrainer(trainer);
+            trainer = trainerDAO.getTrainerByTrainerName(trainer.getTrainerName());
+            return trainer;
         }
+        return null;
     }
 
     @Override

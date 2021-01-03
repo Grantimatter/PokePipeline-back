@@ -14,14 +14,17 @@ import com.revature.pokepipeline.services.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
+@ResponseBody
 @RequestMapping(value = "/trainer")
 @CrossOrigin
 public class TrainerController {
@@ -35,11 +38,11 @@ public class TrainerController {
     }
 
     @PutMapping
-    public ResponseEntity<Trainer> updateProfile(HttpServletRequest req, @RequestBody Trainer trainer) throws IOException {
-
+    public ResponseEntity<Trainer> updateProfile(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
         HttpSession httpSession = req.getSession(false);
         Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
         if (sessionTrainer != null) {
+            log.debug(String.format("Attempting to update %s with new data %s", sessionTrainer.getTrainerName(), trainer));
             trainerService.updateProfile(trainer, sessionTrainer);
             trainer = trainerService.getTrainerByTrainerName(trainer.getTrainerName());
             if(trainer != null){
@@ -52,10 +55,13 @@ public class TrainerController {
     }
 
     @PostMapping
-    public ResponseEntity<Trainer> register(HttpServletRequest req, @RequestBody Trainer trainer) throws IOException {
+    public ResponseEntity<Trainer> register(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
+        log.debug("Entered Post");
+        /*
         HttpSession httpSession = req.getSession(false);
         Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
         if (httpSession != null && sessionTrainer == null) {
+        log.debug("Attempting to register trainer: " + trainer);
             trainerService.register(trainer);
             trainer = trainerService.getTrainerByTrainerName(trainer.getTrainerName());
             if(trainer != null){
@@ -69,7 +75,7 @@ public class TrainerController {
             log.warn("User already logged in");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
-
+*/
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

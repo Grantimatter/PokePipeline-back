@@ -7,9 +7,10 @@ import com.revature.pokepipeline.models.Trainer;
 
 public interface PokemonService {
 
-	void addPokemon(Pokemon pokemon);
-	void updatePokemon(Pokemon pokemon);
+	Pokemon addPokemon(Pokemon pokemon);
+	Pokemon updatePokemon(Pokemon pokemon);
 	Pokemon getPokemonById(int id);
+	Pokemon getPokemon(Pokemon pokemon);
 	void deletePokemon(Pokemon pokemon);
 	
 }
