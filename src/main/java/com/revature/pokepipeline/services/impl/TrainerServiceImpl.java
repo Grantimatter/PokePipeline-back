@@ -34,34 +34,32 @@ public class TrainerServiceImpl implements TrainerService {
         }else if (trainer.getTrainerName() == null || trainer.getTrainerName().equals("")) {
             log.warn("Invalid trainername.");
             return false;
-        } else if (trainer.getPassword() == null || trainer.getPassword().equals("")) {
-            log.warn("Invalid password.");
-            return false;
         }
         return true;
     }
 
     @Override
     public Trainer updateProfile(Trainer trainer, Trainer sessionTrainer) {
-        if (isValidTrainer(trainer) && trainer.getTrainerId() <= 0 && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
+        if (isValidTrainer(trainer) && trainer.getTrainerId() >= 0 && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
             Encoder encoder = null;
             try {
                 encoder = new Encoder();
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 log.error(e);
             }
-            String encryptedPassword = encoder.encrypt(trainer.getPassword());
-            trainer.setPassword(encryptedPassword);
-            trainerDAO.updateTrainer(trainer);
-            trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
-            return trainer;
+            String encryptedPassword = "";
+            if (trainer.getPassword() != null && trainer.getPassword().length() > 0) {
+                encryptedPassword = encoder.encrypt(trainer.getPassword());
+                trainer.setPassword(encryptedPassword);
+            }
+            return trainerDAO.updateTrainer(trainer);
         }
         return null;
     }
 
     @Override
     public Trainer register(Trainer trainer) {
-        if (isValidTrainer(trainer) && trainer.getEmail() != null && !trainer.getEmail().equals("")) {
+        if (isValidTrainer(trainer) && trainer.getEmail() != null && !trainer.getEmail().equals("") && !(trainer.getPassword() == null || trainer.getPassword().equals(""))) {
             Trainer existingTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
             if(existingTrainer!= null){
                 log.warn("Trainer already exists!");
@@ -122,4 +120,8 @@ public class TrainerServiceImpl implements TrainerService {
         return trainer;
     }
 
+    @Override
+    public void deleteTrainer(Trainer trainer) {
+        trainerDAO.deleteTrainer(trainer);
+    }
 }

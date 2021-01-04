@@ -38,9 +38,9 @@ public class TrainerDAOImpl implements TrainerDAO {
 	}
 
 	@Override
-	public void updateTrainer(Trainer trainer) {
+	public Trainer updateTrainer(Trainer trainer) {
 		Session session = sessionFactory.getCurrentSession();
-		session.update(trainer);
+		return (Trainer) session.merge(trainer);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class TrainerDAOImpl implements TrainerDAO {
 		Root<Trainer> trainer = criteriaQuery.from(Trainer.class);
 		Predicate trainerNamePredicate = criteriaBuilder.equal(trainer.get("trainerName"), trainerName);
 		Predicate trainerEmailPredicate = criteriaBuilder.equal(trainer.get("email"), email);
-		criteriaQuery.having(trainerNamePredicate, trainerEmailPredicate);
+		criteriaQuery.where(trainerNamePredicate, trainerEmailPredicate);
 		try {
 			return session.createQuery(criteriaQuery).getSingleResult();
 		}catch(NoResultException e){
@@ -73,4 +73,9 @@ public class TrainerDAOImpl implements TrainerDAO {
 		}
 	}
 
+	@Override
+	public void deleteTrainer(Trainer trainer) {
+		Session session = sessionFactory.getCurrentSession();
+		session.delete(trainer);
+	}
 }
