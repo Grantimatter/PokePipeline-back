@@ -4,24 +4,33 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.revature.pokepipeline.models.Pokemon;
 import com.revature.pokepipeline.models.Trainer;
 import com.revature.pokepipeline.services.PokemonService;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration("/applicationContext.xml")
 class PokemonServiceImplTest {
 
+	private static final Logger log = LogManager.getLogger(PokemonServiceImplTest.class);
+
 	@Autowired
-	private static PokemonService pokemonService;
-	
+	private PokemonService pokemonService;
+
 	@Test
 	public void testIsValidPokemonNull() {
 		List<Pokemon> pokemonList = pokemonService.addPokemon(null);
 		assertNull(pokemonList);
 	}
-	
+
 	@Test
 	public void testIsValidPokemonBadMove() {
 		Pokemon pokemon = new Pokemon();
@@ -83,5 +92,5 @@ class PokemonServiceImplTest {
 		List<Pokemon> pokemonList = pokemonService.deletePokemon(pokemon);
 		assertNull(pokemonList);
 	}
-	
+
 }

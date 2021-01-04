@@ -58,6 +58,14 @@
 			<version>5.2.3.RELEASE</version>
 		</dependency>
 
+		<!-- Spring Test Context -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>5.2.3.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Jackson Databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
