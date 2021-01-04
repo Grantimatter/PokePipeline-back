@@ -23,7 +23,10 @@ PokePipeline will allow the user to choose a Pokémeon and battle their way thro
 * Tomcat - version 9.0
 * JUnit - version 5.4.2
 * Log4j2 - version 2.14.0
-* Spring - version 5.2.8
+* Spring Framework - version 5.2.3
+* Spring MVC - version 5.2.3
+* Spring ORM - version 5.2.3
+* Spring Test - version 5.2.3
 * Javax - version 4.0.1
 * Jackson - version 2.12.0
 * Hibernate - version 5.4.26
