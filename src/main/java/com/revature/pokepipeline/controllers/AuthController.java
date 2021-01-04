@@ -1,61 +1,68 @@
 package com.revature.pokepipeline.controllers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.revature.pokepipeline.utility.SessionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.pokepipeline.models.Users;
-import com.revature.pokepipeline.services.UserService;
-import com.revature.pokepipeline.services.impl.UserServiceImpl;
+import com.revature.pokepipeline.models.Trainer;
+import com.revature.pokepipeline.services.TrainerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+@RestController
+@RequestMapping(value = "/auth")
+@CrossOrigin
 public class AuthController {
 	
 	private Logger log = LogManager.getLogger(AuthController.class);
-	private ObjectMapper objectMapper = new ObjectMapper();
-	private UserService userService = new UserServiceImpl();
+	private TrainerService trainerService;
 
-	public void login(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		BufferedReader reader = req.getReader();
-		StringBuilder stringBuilder = new StringBuilder();
-		String line = reader.readLine();
-		while (line != null) {
-			stringBuilder.append(line);
-			line = reader.readLine();
-		}
-		String body = new String(stringBuilder);
-		Users user = objectMapper.readValue(body, Users.class);
-		if (userService.login(user)) {
-			HttpSession httpSession = req.getSession();
-			user = userService.getUserByUsername(user.getUsername());
-			httpSession.setAttribute("user", user); // storing user object with encrypted password
-			res.setStatus(200);
-			log.info(user.getUsername() + " has logged in.");
+	@Autowired
+	public AuthController(TrainerService trainerService) {
+		this.trainerService = trainerService;
+	}
+
+	@PostMapping
+	public ResponseEntity<Trainer> login(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
+		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
+		if (trainerService.login(trainer, sessionTrainer) != null && sessionTrainer == null) {
+			trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
+			if(trainer != null && SessionUtil.setupLoginSession(req, trainer)){
+				return ResponseEntity.status(HttpStatus.FOUND).body(trainer);
+			}
 		} else {
 			HttpSession httpSession = req.getSession(false);
 			if (httpSession != null) {
 				httpSession.invalidate();
 			}
-			res.setStatus(401);
 			log.warn("Login failed.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
+
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	public void logout(HttpServletRequest req, HttpServletResponse res) 
-			throws IOException {
-		
-		if (req.getMethod().equals("PUT")) {
-			
-			req.getSession().invalidate();
-			
-			res.setStatus(200);
+	@PutMapping
+	public ResponseEntity<String> logout(HttpServletRequest req) {
+		HttpSession session = req.getSession(false);
+		if(session != null){
+			session.invalidate();
+			return ResponseEntity.status(HttpStatus.OK).body("logout");
 		}
+		log.warn("User tried logging out, but was not logged in");
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 }

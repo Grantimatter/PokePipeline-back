@@ -1,107 +1,87 @@
 package com.revature.pokepipeline.services.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.revature.pokepipeline.repos.TrainerDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.revature.pokepipeline.daos.PokemonDAO;
-import com.revature.pokepipeline.daos.impl.PokemonDAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.revature.pokepipeline.repos.PokemonDAO;
 import com.revature.pokepipeline.models.Pokemon;
-import com.revature.pokepipeline.models.Users;
 import com.revature.pokepipeline.services.PokemonService;
 
+import java.util.List;
+
+@Service
 public class PokemonServiceImpl implements PokemonService {
 
 	private Logger log = LogManager.getLogger(PokemonServiceImpl.class);
-	private PokemonDAO pokemonDAO = new PokemonDAOImpl();
+	private PokemonDAO pokemonDAO;
+	private TrainerDAO trainerDAO;
 
-	@Override
-	public boolean addPokemon(Pokemon pokemon) {
-		boolean isAdded = false;
+	@Autowired
+	public PokemonServiceImpl(PokemonDAO pokemonDAO, TrainerDAO trainerDAO) {
+		this.pokemonDAO = pokemonDAO;
+		this.trainerDAO = trainerDAO;
+	}
+
+	public boolean isValidPokemon(Pokemon pokemon) {
 		if (pokemon == null) {
-			log.warn("Invaid pokemon.");
+			log.warn("Invalid pokemon.");
+			return false;
 		} else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0 || pokemon.getMove3API() <= 0
 				|| pokemon.getMove4API() <= 0) {
 			log.warn("Invalid move.");
-		} else if (pokemon.getExperience() <= 0) {
+			return false;
+		} else if (pokemon.getExperience() < 0) {
 			log.warn("Invalid experience.");
+			return false;
 		} else if (pokemon.getCurrentHP() <= 0) {
 			log.warn("Invalid hp amount.");
-		} else if (pokemon.getUser() == null) {
+			return false;
+		} else if (pokemon.getTrainer() == null) {
 			log.warn("Invalid user.");
-		} else {
-			isAdded = pokemonDAO.insertPokemon(pokemon);
+			return false;
 		}
-		if (!isAdded) {
-			log.warn("Could not add Pokemon.");
-		}
-		return isAdded;
+		return true;
 	}
 
 	@Override
-	public boolean updatePokemon(Pokemon pokemon) {
-		boolean isUpdated = false;
-		if (pokemon == null) {
-			log.warn("Invaid pokemon.");
+	public List<Pokemon> addPokemon(Pokemon pokemon) {
+		if (isValidPokemon(pokemon)) {
+			pokemon = pokemonDAO.insertPokemon(pokemon);
+			return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
+		}
+		return null;
+	}
+
+	@Override
+	public Pokemon updatePokemon(Pokemon pokemon) {
+		return pokemonDAO.updatePokemon(pokemon);
+	}
+
+	@Override
+	public Pokemon getPokemonById(int id) {
+		return pokemonDAO.getPokemonById(id);
+	}
+
+	@Override
+	public Pokemon getPokemon(Pokemon pokemon) {
+		return pokemonDAO.getPokemon(pokemon);
+	}
+
+	@Override
+	public List<Pokemon> deletePokemon(Pokemon pokemon) {
+		if (!isValidPokemon(pokemon)) {
+			return null;
 		} else if (pokemon.getPokemonId() <= 0) {
-			log.warn("Must have id to correctly update database.");
-		} else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0 || pokemon.getMove3API() <= 0
-				|| pokemon.getMove4API() <= 0) {
-			log.warn("Invalid move.");
-		} else if (pokemon.getExperience() <= 0) {
-			log.warn("Invalid experience.");
-		} else if (pokemon.getUser() == null) {
-			log.warn("Invalid user.");
+			log.warn("Must have valid id to correctly update database.");
+			return null;
 		} else {
-			isUpdated = pokemonDAO.updatePokemon(pokemon);
+			pokemonDAO.deletePokemon(pokemon);
+			log.info("Pokemon deleted.");
 		}
-		if (!isUpdated) {
-			log.warn("Could not update Pokemon.");
-		}
-		return isUpdated;
+		return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
 	}
-
-	@Override
-	public boolean deletePokemon(Pokemon pokemon) {
-		boolean isDeleted = false;
-		if (pokemon == null) {
-			log.warn("Invaid pokemon.");
-		} else if (pokemon.getPokemonId() <= 0) {
-			log.warn("Must have id to correctly update database.");
-		} else if (pokemon.getMove1API() <= 0 || pokemon.getMove2API() <= 0 || pokemon.getMove3API() <= 0
-				|| pokemon.getMove4API() <= 0) {
-			log.warn("Invalid move.");
-		} else if (pokemon.getExperience() <= 0) {
-			log.warn("Invalid experience.");
-		} else if (pokemon.getCurrentHP() > 0) {
-			log.warn("Invalid hp amount. (Pokemon is not dead)");
-		} else if (pokemon.getUser() == null) {
-			log.warn("Invalid user.");
-		} else {
-			isDeleted = pokemonDAO.deletePokemon(pokemon);
-		}
-		if (!isDeleted) {
-			log.warn("Could not delete Pokemon.");
-		}
-		return isDeleted;
-	}
-
-	@Override
-	public List<Pokemon> getPartyByUser(Users user) {
-		List<Pokemon> pokemonList = new ArrayList<>();
-		if (user == null) {
-			log.warn("Invalid user.");
-		} else if (user.getUserId() <= 0) {
-			log.warn("Invalid user id.");
-		} else {
-			pokemonList = pokemonDAO.getPartyByUser(user);
-		}
-		if (pokemonList == null) {
-			log.warn("Could not get party of Pokemon.");
-		}
-		return pokemonList;
-	}
-
 }

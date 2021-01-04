@@ -1,130 +1,123 @@
 package com.revature.pokepipeline.controllers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokepipeline.models.dto.PokemonDTO;
+import com.revature.pokepipeline.services.TrainerService;
+import com.revature.pokepipeline.utility.SessionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.Pokemon;
-import com.revature.pokepipeline.models.Users;
+import com.revature.pokepipeline.models.Trainer;
 import com.revature.pokepipeline.services.PokemonService;
-import com.revature.pokepipeline.services.impl.PokemonServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
+@RestController
+@RequestMapping(value = "/pokemon")
+@CrossOrigin
 public class PokemonController {
-	
-	private Logger log = LogManager.getLogger(PokemonController.class);
-	private ObjectMapper objectMapper = new ObjectMapper();
-	private PokemonService pokemonService = new PokemonServiceImpl();
 
-	public void addPokemon(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		BufferedReader reader = req.getReader();
-		StringBuilder stringBuilder = new StringBuilder();
-		String line = reader.readLine();
-		while (line != null) {
-			stringBuilder.append(line);
-			line = reader.readLine();
-		}
-		String body = new String(stringBuilder);
-		Pokemon pokemon = objectMapper.readValue(body, Pokemon.class);
-		HttpSession httpSession = req.getSession(false);
-		if (httpSession != null) {
-			Users user = (Users) httpSession.getAttribute("user");
-			pokemon.setUser(user);
-			if (pokemonService.addPokemon(pokemon)) {
-				log.info("Successfully added Pokemon to your party.");
-				res.setStatus(200);
-			}
-			else {
-				res.setStatus(401);
-				log.warn("Could not add Pokemon to your party.");
-			}
-		}
-		else {
-			log.warn("Could not locate user.");
-		}
-	}
+    private final Logger log = LogManager.getLogger(PokemonController.class);
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final PokemonService pokemonService;
+    private final TrainerService trainerService;
 
-	public void updatePokemon(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		BufferedReader reader = req.getReader();
-		StringBuilder stringBuilder = new StringBuilder();
-		String line = reader.readLine();
-		while (line != null) {
-			stringBuilder.append(line);
-			line = reader.readLine();
-		}
-		String body = new String(stringBuilder);
-		Pokemon pokemon = objectMapper.readValue(body, Pokemon.class);
-		HttpSession httpSession = req.getSession(false);
-		if (httpSession != null) {
-			Users user = (Users) httpSession.getAttribute("user");
-			pokemon.setUser(user);
-			if (pokemonService.updatePokemon(pokemon)) {
-				res.setStatus(200);
-				log.info("Successfully updated Pokemon.");
-			}
-			else {
-				res.setStatus(401);
-				log.warn("Could not update Pokemon.");
-			}
-		}
-		else {
-			log.warn("Could not locate user.");
-		}
-	}
+    @Autowired
+    public PokemonController(PokemonService pokemonService, TrainerService trainerService) {
+        this.pokemonService = pokemonService;
+        this.trainerService = trainerService;
+    }
 
-	public void deletePokemon(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		BufferedReader reader = req.getReader();
-		StringBuilder stringBuilder = new StringBuilder();
-		String line = reader.readLine();
-		while (line != null) {
-			stringBuilder.append(line);
-			line = reader.readLine();
-		}
-		String body = new String(stringBuilder);
-		Pokemon pokemon = objectMapper.readValue(body, Pokemon.class);
-		HttpSession httpSession = req.getSession(false);
-		if (httpSession != null) {
-			Users user = (Users) httpSession.getAttribute("user");
-			pokemon.setUser(user);
-			if (pokemonService.deletePokemon(pokemon)) {
-				res.setStatus(200);
-				log.info("Successfully deleted Pokemon.");
-			}
-			else {
-				res.setStatus(401);
-				log.warn("Could not delete Pokemon.");
-			}
-		}
-		else {
-			log.warn("Could not locate user.");
-		}
-	}
+    @PostMapping
+    public ResponseEntity<List<Pokemon>> addPokemon(@RequestBody PokemonDTO pokemonDTO, HttpServletRequest req) throws IOException {
+        log.debug("Attempting to add a new pokemon with data: " + pokemonDTO);
+        Pokemon pokemon = objectMapper.convertValue(pokemonDTO, Pokemon.class);
+        if (pokemon != null) {
+            Trainer trainer = SessionUtil.getTrainerFromSession(req);
+            if (trainer != null) {
+                pokemon.setTrainer(trainer);
+                List<Pokemon> pokemonList = pokemonService.addPokemon(pokemon);
+                trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail()).getPokemonList();
+                if (pokemonList != null && pokemonList.size() > 0) {
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body(pokemonList);
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+                }
+            }
 
-	public void getPartyByUser(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		HttpSession httpSession = req.getSession(false);
-		if (httpSession != null) {
-			Users user = (Users) httpSession.getAttribute("user");
-			List<Pokemon> pokemonList = pokemonService.getPartyByUser(user);
-			if (pokemonList.size() > 0) {
-				res.setStatus(200);
-				// insert list into body of response
-				log.info("Successfully deleted Pokemon.");
-			}
-			else {
-				res.setStatus(401);
-				log.warn("Could not delete Pokemon.");
-			}
-		}
-		else {
-			log.warn("Could not locate user.");
-		}
-	}
+            log.warn("Could not locate trainer.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
+        log.warn("Pokemon was an invalid format");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Pokemon> updatePokemon(@RequestBody PokemonDTO pokemonDTO, HttpServletRequest req) throws IOException {
+        Pokemon pokemon = objectMapper.convertValue(pokemonDTO, Pokemon.class);
+        Pokemon dbPokemon = pokemonService.getPokemonById(pokemon.getPokemonId());
+        Trainer trainer = SessionUtil.getTrainerFromSession(req);
+        if (pokemon != null) {
+            if (trainer != null) {
+                if (isOwnedByTrainer(trainer, dbPokemon)) {
+                    pokemon = pokemonService.updatePokemon(pokemon);
+                    log.info("Successfully updated Pokemon.");
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body(pokemon);
+                } else {
+                    log.warn(String.format("Pokemon with ID: %d does not belong to %s!", pokemon.getPokemonId(), trainer.getTrainerName()));
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                }
+            }
+            log.warn("Could not locate trainer.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        log.warn("Pokemon was an invalid format");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<List<Pokemon>> deletePokemon(@RequestBody PokemonDTO pokemonDTO, HttpServletRequest req) throws IOException {
+        Pokemon pokemon = pokemonService.getPokemonById(objectMapper.convertValue(pokemonDTO, Pokemon.class).getPokemonId());
+        Trainer trainer = SessionUtil.getTrainerFromSession(req);
+        if (pokemon != null) {
+            if (trainer != null) {
+                if (isOwnedByTrainer(trainer, pokemon)) {
+                    List<Pokemon> pokemonList = pokemonService.deletePokemon(pokemon);
+                    log.info("Successfully deleted Pokemon.");
+                    return ResponseEntity.status(HttpStatus.ACCEPTED).body(pokemonList);
+                } else {
+                    log.warn(String.format("Pokemon with ID: %d does not belong to %s!", pokemon.getPokemonId(), trainer.getTrainerName()));
+                }
+            }
+            log.warn("Could not locate user.");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        log.warn("Pokemon was an invalid format");
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+
+    private boolean isOwnedByTrainer(Trainer trainer, Pokemon pokemon) {
+        for (Pokemon p : trainer.getPokemonList()) {
+            if (p.getPokemonId() == pokemon.getPokemonId()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
