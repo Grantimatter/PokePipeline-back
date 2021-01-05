@@ -11,6 +11,10 @@
 	</welcome-file-list>
 
 	<filter>
+		<filter-name>AuthFilter</filter-name>
+		<filter-class>com.revature.pokepipeline.servlets.filters.SessionAuthFilter</filter-class>
+	</filter>
+	<filter>
 		<filter-name>Cors</filter-name>
 		<filter-class>com.revature.pokepipeline.servlets.filters.CorsFilter</filter-class>
 	</filter>
