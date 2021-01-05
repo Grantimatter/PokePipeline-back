@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
-	version="4.0">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
 	<display-name>PokePipeline</display-name>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -15,7 +12,7 @@
 
 	<filter>
 		<filter-name>Cors</filter-name>
-		<filter-class>com.revature.servlets.filters.CorsFilter</filter-class>
+		<filter-class>com.revature.pokepipeline.servlets.filters.CorsFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Cors</filter-name>
@@ -25,7 +22,7 @@
 	<servlet>
 		<display-name>MasterServlet</display-name>
 		<servlet-name>MasterServlet</servlet-name>
-		<servlet-class>com.revature.servlets.MasterServlet</servlet-class>
+		<servlet-class>com.revature.pokepipeline.servlets.MasterServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>MasterServlet</servlet-name>
