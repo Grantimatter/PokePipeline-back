@@ -40,7 +40,7 @@ public class AuthController {
 		if (trainerService.login(trainer, sessionTrainer) != null && sessionTrainer == null) {
 			trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
 			if(trainer != null && SessionUtil.setupLoginSession(req, trainer)){
-				return ResponseEntity.status(HttpStatus.FOUND).body(trainer);
+				return ResponseEntity.status(HttpStatus.FOUND).header("Access-Control-Allow-Origin", "http://ec2-18-216-220-245.us-east-2.compute.amazonaws.com").body(trainer);
 			}
 		} else {
 			HttpSession httpSession = req.getSession(false);
@@ -48,7 +48,7 @@ public class AuthController {
 				httpSession.invalidate();
 			}
 			log.warn("Login failed.");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).header("Access-Control-Allow-Origin", "http://ec2-18-216-220-245.us-east-2.compute.amazonaws.com").build();
 		}
 
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
