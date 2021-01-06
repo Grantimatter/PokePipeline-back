@@ -26,7 +26,7 @@ import java.io.IOException;
 
 @CrossOrigin(allowCredentials = "true")
 @RestController
-@RequestMapping(value = "/trainer", consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/trainer")
 public class TrainerController {
 
     private final Logger log = LogManager.getLogger(TrainerController.class);

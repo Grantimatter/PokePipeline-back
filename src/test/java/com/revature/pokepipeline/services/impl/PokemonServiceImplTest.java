@@ -9,18 +9,24 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.revature.pokepipeline.models.Pokemon;
 import com.revature.pokepipeline.models.Trainer;
 import com.revature.pokepipeline.services.PokemonService;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.web.WebAppConfiguration;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration("/applicationContext.xml")
+@SpringJUnitWebConfig(locations = {"/applicationContext.xml"})
 class PokemonServiceImplTest {
 
 	private static final Logger log = LogManager.getLogger(PokemonServiceImplTest.class);
+
+	@Autowired
+	private ApplicationContext applicationContext;
 
 	@Autowired
 	private PokemonService pokemonService;
