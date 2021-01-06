@@ -12,12 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -53,6 +48,18 @@ public class AuthController {
 		}
 
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@GetMapping
+	public ResponseEntity<Trainer> checkSession(HttpServletRequest req) throws IOException {
+		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
+		Trainer trainer = trainerService.getTrainerByTrainerNameOrEmail(sessionTrainer.getTrainerName(), sessionTrainer.getEmail());
+		if(trainer != null) {
+			log.debug("Returning valid trainer from session");
+			return  ResponseEntity.status(HttpStatus.OK).body(trainer);
+		}
+		log.warn("No trainer associated with current session");
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
 	@PutMapping

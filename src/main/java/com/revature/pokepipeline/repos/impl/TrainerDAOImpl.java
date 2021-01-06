@@ -64,9 +64,14 @@ public class TrainerDAOImpl implements TrainerDAO {
 		Root<Trainer> trainer = criteriaQuery.from(Trainer.class);
 		Predicate trainerNamePredicate = criteriaBuilder.equal(trainer.get("trainerName"), trainerName);
 		Predicate trainerEmailPredicate = criteriaBuilder.equal(trainer.get("email"), email);
-		criteriaQuery.where(trainerNamePredicate, trainerEmailPredicate);
+		criteriaQuery.where(trainerNamePredicate);
 		try {
-			return session.createQuery(criteriaQuery).getSingleResult();
+			Trainer retrievedTrainer = session.createQuery(criteriaQuery).getSingleResult();
+			criteriaQuery.where(trainerEmailPredicate);
+			if(retrievedTrainer != null){
+				retrievedTrainer = session.createQuery(criteriaQuery).getSingleResult();
+			}
+			return retrievedTrainer;
 		}catch(NoResultException e){
 			log.warn("No results found for the query");
 			return null;
