@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+@CrossOrigin(allowCredentials = "true")
 @RestController
 @RequestMapping(value = "/pokemon")
-@CrossOrigin
 public class PokemonController {
 
     private final Logger log = LogManager.getLogger(PokemonController.class);

@@ -24,9 +24,9 @@ import com.revature.pokepipeline.models.Trainer;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@CrossOrigin(allowCredentials = "true")
 @RestController
 @RequestMapping(value = "/trainer", consumes = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin
 public class TrainerController {
 
     private final Logger log = LogManager.getLogger(TrainerController.class);
