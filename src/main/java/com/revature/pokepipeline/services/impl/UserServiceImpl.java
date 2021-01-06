@@ -40,8 +40,7 @@ public class UserServiceImpl implements UserService {
 			} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 				log.error(e);
 			}
-			String encryptedPassword = encoder.encrypt(user.getPassword());
-			user.setPassword(encryptedPassword);
+
 			isUpdated = userDAO.updateUser(user);
 		}
 		if (!isUpdated) {
@@ -129,6 +128,16 @@ public class UserServiceImpl implements UserService {
 			log.warn("Could not locate user.");
 		}
 		return user;
+	}
+
+	public boolean updatePassword(String newPass, Users userToUpdate)
+			throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+		Encoder encoder = new Encoder();
+		String encryptedPass = encoder.encrypt(newPass);
+		userToUpdate.setPassword(encryptedPass);
+
+		return userDAO.updateUser(userToUpdate);
 	}
 
 }

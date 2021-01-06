@@ -16,7 +16,7 @@ import com.revature.pokepipeline.services.UserService;
 import com.revature.pokepipeline.services.impl.UserServiceImpl;
 
 public class AuthController {
-	
+
 	private Logger log = LogManager.getLogger(AuthController.class);
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private UserService userService = new UserServiceImpl();
@@ -32,30 +32,21 @@ public class AuthController {
 		String body = new String(stringBuilder);
 		Users user = objectMapper.readValue(body, Users.class);
 		if (userService.login(user)) {
-			HttpSession httpSession = req.getSession();
+			HttpSession httpSession = req.getSession(true);
 			user = userService.getUserByUsername(user.getUsername());
 			httpSession.setAttribute("user", user);
+			httpSession.setAttribute("username", user.getUsername());
 			res.setStatus(200);
 			log.info(user.getUsername() + " has logged in.");
-		} else {
-			HttpSession httpSession = req.getSession(false);
-			if (httpSession != null) {
-				httpSession.invalidate();
-			}
-			res.setStatus(401);
-			log.warn("Login failed.");
 		}
 	}
 
-	public void logout(HttpServletRequest req, HttpServletResponse res) 
-			throws IOException {
-		
-		if (req.getMethod().equals("PUT")) {
-			
-			req.getSession().invalidate();
-			
-			res.setStatus(200);
-		}
+	public void logout(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+		req.getSession(false).invalidate();
+
+		res.setStatus(200);
+
 	}
 
 }

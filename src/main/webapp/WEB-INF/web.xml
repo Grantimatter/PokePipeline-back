@@ -14,6 +14,10 @@
 		<filter-name>AuthFilter</filter-name>
 		<filter-class>com.revature.pokepipeline.servlets.filters.SessionAuthFilter</filter-class>
 	</filter>
+	<filter-mapping>
+		<filter-name>AuthFilter</filter-name>
+		<url-pattern>/auth/*</url-pattern>
+	</filter-mapping>
 	<filter>
 		<filter-name>Cors</filter-name>
 		<filter-class>com.revature.pokepipeline.servlets.filters.CorsFilter</filter-class>

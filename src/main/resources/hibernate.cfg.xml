@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!DOCTYPE hibernate-configuration PUBLIC
-        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
 	<session-factory>
 		<!-- JDBC Configuration -->
 		<property name="hibernate.connection.username">postgres</property>
 		<property name="hibernate.connection.password">password</property>
-		<property name="hibernate.connection.url">jdbc:postgresql://ers.c4xhsktzczbr.us-west-1.rds.amazonaws.com:5432/postgres</property>
+		<property name="hibernate.connection.url">jdbc:postgresql://javafs-test.cnzjucbyslu9.us-west-2.rds.amazonaws.com/postgres</property>
 		<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 		<!-- Hibernate Properties -->
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -19,10 +17,10 @@
 		<property name="hibernate.format_sql">true</property>
 		<!-- DDL -->
 		<property name="hibernate.hbm2ddl.auto">update</property>
-		
+
 		<!-- We will map our classes here -->
-		<mapping class="com.revature.pokepipeline.models.Users"/>
-		<mapping class="com.revature.pokepipeline.models.Pokemon"/>
-		<mapping class="com.revature.pokepipeline.models.Item"/>
+		<mapping class="com.revature.pokepipeline.models.Users" />
+		<mapping class="com.revature.pokepipeline.models.Pokemon" />
+		<mapping class="com.revature.pokepipeline.models.Item" />
 	</session-factory>
 </hibernate-configuration>

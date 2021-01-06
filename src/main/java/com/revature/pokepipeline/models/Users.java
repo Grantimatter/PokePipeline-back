@@ -10,33 +10,35 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-@Entity
+@Entity(name = "users")
+@Table(name = "users")
 public class Users {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
-	
-	@Column(unique=true)
+
+	@Column(unique = true)
 	private String username;
 	private String password;
-	@Column(unique=true)
+	@Column(unique = true)
 	private String email;
 	private String description;
 	private byte[] profilePicture;
-	
+
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy = "user")
 	private List<Pokemon> pokemonList;
-	
+
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy = "user")
 	private List<Item> itemList;
-	
+
 	public Users() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -222,6 +224,4 @@ public class Users {
 		this.itemList = itemList;
 	}
 
-	
-	
 }

@@ -46,7 +46,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public Users getUserById(int userId) {
-		Session session = HibernateUtility.getSession();	
+		Session session = HibernateUtility.getSession();
 		return session.get(Users.class, userId);
 	}
 
@@ -54,27 +54,29 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public List<Users> getAllUsers() {
 		Session session = HibernateUtility.getSession();
-		List<Users> userList = session.createQuery("from Users").list();
+		List<Users> userList = session.createQuery("from users").list();
 		return userList;
 	}
 
 	@Override
 	public Users getUserByUsername(String username) {
 		Users user = new Users();
-		Session session = HibernateUtility.getSession();	
+		Session session = HibernateUtility.getSession();
 		Transaction transaction;
 		try {
 			transaction = session.beginTransaction();
-			String HQL = "from Users where username=?1";
+			String HQL = "from users where username=?0";
 			Query<Users> query = session.createQuery(HQL, Users.class);
-			query.setParameter(1, username);
+			query.setParameter(0, username);
 			user = query.uniqueResult();
 			transaction.commit();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		if (user.getUserId() == 0) return null;
-		else return user;
+		if (user.getUserId() == 0)
+			return null;
+		else
+			return user;
 	}
 
 }
