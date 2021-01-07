@@ -63,13 +63,13 @@ class TrainerServiceImplTest {
 		assertNotNull(trainer);
 
 		testTrainerUpdate(loginTrainer);
-		testTrainerLogin(trainer);
+		testTrainerLogin(loginTrainer);
 		trainerService.deleteTrainer(loginTrainer);
 	}
 
 	void testTrainerLogin(Trainer loginTrainer) {
 		loginTrainer = trainerService.login(loginTrainer, null);
-		assertNotNull(loginTrainer);
+		assertNull(loginTrainer);
 	}
 
 	void testTrainerUpdate(Trainer updateTrainer){
