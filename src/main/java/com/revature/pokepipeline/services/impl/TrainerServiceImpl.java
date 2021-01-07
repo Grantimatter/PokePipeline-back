@@ -51,7 +51,7 @@ public class TrainerServiceImpl implements TrainerService {
                 dbTrainer.setPassword(encryptedPassword);
             }
 
-            if (trainer.getEmail() != null) dbTrainer.setTrainerName(trainer.getEmail());
+            if (trainer.getEmail() != null) dbTrainer.setEmail(trainer.getEmail());
             if (trainer.getDescription() != null) dbTrainer.setDescription(trainer.getDescription());
 
             trainer = trainerDAO.updateTrainer(dbTrainer);
