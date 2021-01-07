@@ -61,6 +61,10 @@ public class PokemonServiceImpl implements PokemonService {
 		Pokemon dbPokemon = pokemonDAO.getPokemon(pokemon);
 		if(pokemon.getCurrentHP() > 0) dbPokemon.setCurrentHP(pokemon.getCurrentHP());
 		if(pokemon.getExperience() > 0) dbPokemon.setExperience(pokemon.getExperience());
+		if(pokemon.getMove1API() > 0) dbPokemon.setMove1API(pokemon.getMove1API());
+		if(pokemon.getMove2API() > 0) dbPokemon.setMove1API(pokemon.getMove2API());
+		if(pokemon.getMove3API() > 0) dbPokemon.setMove1API(pokemon.getMove3API());
+		if(pokemon.getMove4API() > 0) dbPokemon.setMove1API(pokemon.getMove4API());
 		return pokemonDAO.updatePokemon(dbPokemon);
 	}
 
