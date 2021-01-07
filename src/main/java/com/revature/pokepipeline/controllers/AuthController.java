@@ -35,7 +35,7 @@ public class AuthController {
 		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
 		if (trainerService.login(trainer, sessionTrainer) != null && sessionTrainer == null) {
 			trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
-			if(trainer != null && SessionUtil.setupLoginSession(req, trainer)){
+			if(trainer != null && SessionUtil.setupLoginSession(req, trainer)) {
 				return ResponseEntity.status(HttpStatus.OK).body(trainer);
 			}
 		} else {
