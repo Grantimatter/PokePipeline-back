@@ -59,8 +59,8 @@ public class PokemonServiceImpl implements PokemonService {
 	@Override
 	public Pokemon updatePokemon(Pokemon pokemon) {
 		Pokemon dbPokemon = pokemonDAO.getPokemon(pokemon);
-		if(pokemon.getCurrentHP() >= 0) dbPokemon.setCurrentHP(pokemon.getCurrentHP());
-		if(pokemon.getExperience() >= 0) dbPokemon.setExperience(pokemon.getExperience());
+		if(pokemon.getCurrentHP() > 0) dbPokemon.setCurrentHP(pokemon.getCurrentHP());
+		if(pokemon.getExperience() > 0) dbPokemon.setExperience(pokemon.getExperience());
 		return pokemonDAO.updatePokemon(dbPokemon);
 	}
 

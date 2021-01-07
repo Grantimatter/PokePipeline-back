@@ -38,7 +38,6 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     public Trainer updateProfile(Trainer trainer, Trainer sessionTrainer) {
         Trainer dbTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(sessionTrainer.getTrainerName(), sessionTrainer.getEmail());
-        dbTrainer.setPassword(null);
         if (isValidTrainer(trainer) && dbTrainer.getTrainerId() == sessionTrainer.getTrainerId()) {
 
             Encoder encoder = null;
@@ -55,15 +54,9 @@ public class TrainerServiceImpl implements TrainerService {
             if (trainer.getEmail() != null) dbTrainer.setTrainerName(trainer.getEmail());
             if (trainer.getDescription() != null) dbTrainer.setDescription(trainer.getDescription());
 
-            /*
-            if(trainer.getEmail() == null) trainer.setEmail(dbTrainer.getEmail());
-            if(trainer.getTrainerId() <= 0) trainer.setTrainerId(dbTrainer.getTrainerId());
-            if(trainer.getDescription() == null) trainer.setDescription(dbTrainer.getDescription());
-            trainer.setPokemonList(dbTrainer.getPokemonList());
-            trainer.setItemList(dbTrainer.getItemList());
-            trainer.setTrainerName(dbTrainer.getTrainerName());*/
-
-            return trainerDAO.updateTrainer(dbTrainer);
+            trainer = trainerDAO.updateTrainer(dbTrainer);
+            trainer.setPassword(null);
+            return trainer;
         }
         return null;
     }
