@@ -69,7 +69,7 @@ class TrainerServiceImplTest {
 
 	void testTrainerLogin(Trainer loginTrainer) {
 		loginTrainer = trainerService.login(loginTrainer, null);
-		assertNull(loginTrainer);
+		assertNotNull(loginTrainer);
 	}
 
 	void testTrainerUpdate(Trainer updateTrainer){
