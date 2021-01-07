@@ -64,7 +64,7 @@ public class TrainerServiceImpl implements TrainerService {
             trainer.setTrainerName(dbTrainer.getTrainerName());*/
 
 
-            return trainerDAO.updateTrainer(trainer);
+            return trainerDAO.updateTrainer(dbTrainer);
         }
         return null;
     }
