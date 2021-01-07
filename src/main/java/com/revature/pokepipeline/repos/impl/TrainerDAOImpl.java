@@ -75,7 +75,7 @@ public class TrainerDAOImpl implements TrainerDAO {
                 return retrievedTrainer;
             }
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            log.warn(e.getMessage());
         }
 
         log.warn("No results found for the query");

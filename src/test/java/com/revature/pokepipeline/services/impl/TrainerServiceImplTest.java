@@ -56,7 +56,7 @@ class TrainerServiceImplTest {
 	void testTrainerInsert() {
 		Trainer trainer = new Trainer();
 		trainer.setTrainerName("testTrainer");
-		trainer.setPassword("pass");
+		trainer.setPassword("password78");
 		trainer.setEmail("testTrainer@email.net");
 		Trainer loginTrainer = trainer;
 		trainer = trainerService.register(trainer);
