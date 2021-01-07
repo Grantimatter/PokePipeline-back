@@ -82,7 +82,7 @@ class TrainerServiceImplTest {
 
 	@Test
 	void testGetTrainerByTrainerNameOrEmailFail() {
-		Trainer trainer = new Trainer(900,"test","pass","test@email.net","", null, null);
+		Trainer trainer = new Trainer(900,"128i90asdjj210uasd","asd21sadcas2d","d21asdacwaewa","", null, null);
 		trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
 		assertNull(trainer);
 	}

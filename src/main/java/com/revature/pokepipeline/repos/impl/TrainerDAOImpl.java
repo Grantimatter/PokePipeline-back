@@ -60,6 +60,7 @@ public class TrainerDAOImpl implements TrainerDAO {
     @Override
     public Trainer getTrainerByTrainerNameOrEmail(String trainerName, String email) {
         Session session = sessionFactory.getCurrentSession();
+
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Trainer> criteriaQuery = criteriaBuilder.createQuery(Trainer.class);
         Root<Trainer> trainer = criteriaQuery.from(Trainer.class);
@@ -67,10 +68,16 @@ public class TrainerDAOImpl implements TrainerDAO {
         Predicate trainerEmailPredicate = criteriaBuilder.equal(trainer.get("email"), email);
         Predicate nameOrEmail = criteriaBuilder.or(trainerNamePredicate, trainerEmailPredicate);
         criteriaQuery.where(nameOrEmail);
-        Trainer retrievedTrainer = session.createQuery(criteriaQuery).getSingleResult();
-        if (retrievedTrainer != null) {
-            return retrievedTrainer;
+
+        try {
+            Trainer retrievedTrainer = session.createQuery(criteriaQuery).getSingleResult();
+            if (retrievedTrainer != null) {
+                return retrievedTrainer;
+            }
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
         }
+
         log.warn("No results found for the query");
         return null;
     }
