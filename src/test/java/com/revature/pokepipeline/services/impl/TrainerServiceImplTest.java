@@ -50,8 +50,8 @@ class TrainerServiceImplTest {
 		trainer.setPassword("password78");
 		trainer.setEmail("testTrainer@email.net");
 		Trainer loginTrainer = trainer;
-		trainer = trainerService.register(trainer);
-		assertNotNull(trainer);
+		trainerService.register(trainer);
+		//assertNotNull(trainer);
 
 		testTrainerUpdate(loginTrainer);
 		testTrainerLogin(loginTrainer);
