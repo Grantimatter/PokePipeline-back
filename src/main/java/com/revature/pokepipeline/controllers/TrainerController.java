@@ -38,6 +38,12 @@ public class TrainerController {
         this.trainerService = trainerService;
     }
 
+    /**
+     * Used to update profile information of a registered Trainer.
+     * @param trainerDTO The DTO JSON
+     * @param req The HttpServletRequest from the client.
+     * @return returns a ResponseEntity
+     */
     @PutMapping
     public ResponseEntity<Trainer> updateProfile(@RequestBody TrainerDTO trainerDTO, HttpServletRequest req) {
         Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);

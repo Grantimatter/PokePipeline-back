@@ -31,27 +31,31 @@ public class TrainerServiceImpl implements TrainerService {
         if (trainer == null) {
             log.warn("Invalid trainer.");
             return false;
-        }else if (trainer.getTrainerName() == null || trainer.getTrainerName().equals("")) {
-            log.warn("Invalid trainername.");
-            return false;
         }
         return true;
     }
 
     @Override
     public Trainer updateProfile(Trainer trainer, Trainer sessionTrainer) {
-        if (isValidTrainer(trainer) && trainer.getTrainerId() >= 0 && trainer.getTrainerId() == sessionTrainer.getTrainerId()) {
+        Trainer dbTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(sessionTrainer.getTrainerName(), sessionTrainer.getEmail());
+        dbTrainer.setPassword(null);
+        if (isValidTrainer(trainer) && dbTrainer.getTrainerId() == sessionTrainer.getTrainerId()) {
             Encoder encoder = null;
             try {
                 encoder = new Encoder();
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 log.error(e);
             }
-            String encryptedPassword = "";
-            if (trainer.getPassword() != null && trainer.getPassword().length() > 0) {
-                encryptedPassword = encoder.encrypt(trainer.getPassword());
+            if (trainer.getPassword() != null && trainer.getPassword().length() > 0 && encoder != null) {
+                String encryptedPassword = encoder.encrypt(trainer.getPassword());
                 trainer.setPassword(encryptedPassword);
             }
+            if(trainer.getEmail() == null) trainer.setEmail(dbTrainer.getEmail());
+            if(trainer.getTrainerId() <= 0) trainer.setTrainerId(dbTrainer.getTrainerId());
+            if(trainer.getDescription() == null) trainer.setDescription(dbTrainer.getDescription());
+            trainer.setPokemonList(dbTrainer.getPokemonList());
+            trainer.setItemList(dbTrainer.getItemList());
+            trainer.setTrainerName(dbTrainer.getTrainerName());
             return trainerDAO.updateTrainer(trainer);
         }
         return null;
@@ -59,7 +63,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer register(Trainer trainer) {
-        if (isValidTrainer(trainer) && trainer.getEmail() != null && !trainer.getEmail().equals("") && !(trainer.getPassword() == null || trainer.getPassword().equals(""))) {
+        if (isValidTrainer(trainer) && trainer.getEmail() != null && !trainer.getEmail().equals("") && !(trainer.getPassword() == null || trainer.getPassword().equals("")) && !(trainer.getTrainerName() == null || trainer.getTrainerName().equals(""))) {
             Trainer existingTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
             if(existingTrainer!= null){
                 log.warn("Trainer already exists!");

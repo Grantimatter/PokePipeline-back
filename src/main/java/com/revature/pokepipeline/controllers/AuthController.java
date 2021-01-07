@@ -30,6 +30,13 @@ public class AuthController {
 		this.trainerService = trainerService;
 	}
 
+	/**
+	 * Used for logging in and creating a session.
+	 * @param trainer The trainer object to create
+	 * @param req The HttpServletRequest object sent from the client
+	 * @return ResponseEntity<Trainer>
+	 * @throws IOException
+	 */
 	@PostMapping
 	public ResponseEntity<Trainer> login(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
 		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
@@ -54,6 +61,7 @@ public class AuthController {
 	public ResponseEntity<Trainer> checkSession(HttpServletRequest req) throws IOException {
 		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
 		Trainer trainer = trainerService.getTrainerByTrainerNameOrEmail(sessionTrainer.getTrainerName(), sessionTrainer.getEmail());
+		trainer.setPassword(null);
 		if(trainer != null) {
 			log.debug("Returning valid trainer from session");
 			return  ResponseEntity.status(HttpStatus.OK).body(trainer);
