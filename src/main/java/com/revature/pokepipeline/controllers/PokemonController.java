@@ -79,7 +79,7 @@ public class PokemonController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<List<Pokemon>> deletePokemon(@PathVariable int id, HttpServletRequest req) {
+    public ResponseEntity<List<Pokemon>> deletePokemon(@PathVariable("id") int id, HttpServletRequest req) {
         Pokemon pokemon = pokemonService.getPokemonById(id);
         Trainer trainer = SessionUtil.getTrainerFromSession(req);
         if (pokemon != null) {
@@ -94,7 +94,7 @@ public class PokemonController {
                 }
             }
             log.warn("Could not locate user.");
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         log.warn("Pokemon was an invalid format");
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
