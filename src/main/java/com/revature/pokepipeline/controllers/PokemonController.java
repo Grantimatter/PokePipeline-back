@@ -103,11 +103,7 @@ public class PokemonController {
     }
 
     private boolean isOwnedByTrainer(Trainer trainer, Pokemon pokemon) {
-        for (Pokemon p : trainer.getPokemonList()) {
-            if (p.getPokemonId() == pokemon.getPokemonId()) {
-                return true;
-            }
-        }
+        if(pokemon.getTrainer().getTrainerId() == trainer.getTrainerId()) return true;
         return false;
     }
 }

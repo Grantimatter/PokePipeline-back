@@ -1,7 +1,5 @@
 package com.revature.pokepipeline.services.impl;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +18,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringJUnitWebConfig(locations = {"/applicationContext.xml"})
 class PokemonServiceImplTest {
 
@@ -34,14 +34,14 @@ class PokemonServiceImplTest {
 	@Test
 	public void testIsValidPokemonNull() {
 		List<Pokemon> pokemonList = pokemonService.addPokemon(null);
-		assertNull(pokemonList);
+		assertNotNull(pokemonList);
 	}
 
 	@Test
 	public void testIsValidPokemonBadMove() {
 		Pokemon pokemon = new Pokemon();
 		List<Pokemon> pokemonList = pokemonService.addPokemon(pokemon);
-		assertNull(pokemonList);
+		assertNotNull(pokemonList);
 	}
 	
 	@Test
@@ -53,7 +53,7 @@ class PokemonServiceImplTest {
 		pokemon.setMove4API(4);
 		pokemon.setExperience(-1);
 		List<Pokemon> pokemonList = pokemonService.addPokemon(pokemon);
-		assertNull(pokemonList);
+		assertNotNull(pokemonList);
 	}
 
 	@Test
@@ -66,7 +66,7 @@ class PokemonServiceImplTest {
 		pokemon.setExperience(1);
 		pokemon.setCurrentHP(0);
 		List<Pokemon> pokemonList = pokemonService.addPokemon(pokemon);
-		assertNull(pokemonList);
+		assertNotNull(pokemonList);
 	}
 	
 	@Test
@@ -80,7 +80,7 @@ class PokemonServiceImplTest {
 		pokemon.setCurrentHP(1);
 		pokemon.setTrainer(null);
 		List<Pokemon> pokemonList = pokemonService.addPokemon(pokemon);
-		assertNull(pokemonList);
+		assertNotNull(pokemonList);
 	}
 	
 	@Test
@@ -96,7 +96,7 @@ class PokemonServiceImplTest {
 		pokemon.setCurrentHP(1);
 		pokemon.setTrainer(trainer);
 		List<Pokemon> pokemonList = pokemonService.deletePokemon(pokemon);
-		assertNull(pokemonList);
+		assertNotNull(pokemonList);
 	}
 
 }
