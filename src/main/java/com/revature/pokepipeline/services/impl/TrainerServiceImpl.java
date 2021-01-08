@@ -19,8 +19,8 @@ import com.revature.pokepipeline.utility.Encoder;
 @Service
 public class TrainerServiceImpl implements TrainerService {
 
-    private Logger log = LogManager.getLogger(TrainerServiceImpl.class);
-    private TrainerDAO trainerDAO;
+    private final Logger log = LogManager.getLogger(TrainerServiceImpl.class);
+    private final TrainerDAO trainerDAO;
 
     @Autowired
     public TrainerServiceImpl(TrainerDAO trainerDAO) {
@@ -87,7 +87,7 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     public Trainer login(Trainer trainer, Trainer sessionTrainer) {
         Trainer dbTrainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
-        if(isValidTrainer(trainer) && sessionTrainer == null) {
+        if(sessionTrainer == null) {
 
             if (dbTrainer == null) {
                 log.warn("Could not locate trainer account.");

@@ -1,7 +1,7 @@
 package com.revature.pokepipeline.controllers;
 
-import java.io.IOException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokepipeline.models.dto.TrainerDTO;
 import com.revature.pokepipeline.utility.SessionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import com.revature.pokepipeline.models.Trainer;
 import com.revature.pokepipeline.services.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +21,9 @@ import javax.servlet.http.HttpSession;
 @RequestMapping(value = "/auth")
 public class AuthController {
 
-	private Logger log = LogManager.getLogger(AuthController.class);
-	private TrainerService trainerService;
+	private final Logger log = LogManager.getLogger(AuthController.class);
+	private final TrainerService trainerService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
 	public AuthController(TrainerService trainerService) {
@@ -32,13 +32,13 @@ public class AuthController {
 
 	/**
 	 * Used for logging in and creating a session.
-	 * @param trainer The trainer object to create
+	 * @param trainerDTO The trainer object to create
 	 * @param req The HttpServletRequest object sent from the client
 	 * @return ResponseEntity<Trainer>
-	 * @throws IOException
 	 */
 	@PostMapping
-	public ResponseEntity<Trainer> login(@RequestBody Trainer trainer, HttpServletRequest req) throws IOException {
+	public ResponseEntity<Trainer> login(@RequestBody TrainerDTO trainerDTO, HttpServletRequest req) {
+		Trainer trainer = objectMapper.convertValue(trainerDTO, Trainer.class);
 		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
 		if (trainerService.login(trainer, sessionTrainer) != null && sessionTrainer == null) {
 			trainer = trainerService.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
@@ -58,15 +58,17 @@ public class AuthController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Trainer> checkSession(HttpServletRequest req) throws IOException {
+	public ResponseEntity<Trainer> checkSession(HttpServletRequest req) {
 		Trainer sessionTrainer = SessionUtil.getTrainerFromSession(req);
-		Trainer trainer = trainerService.getTrainerByTrainerNameOrEmail(sessionTrainer.getTrainerName(), sessionTrainer.getEmail());
-		trainer.setPassword(null);
-		if(trainer != null) {
-			log.debug("Returning valid trainer from session");
-			return  ResponseEntity.status(HttpStatus.OK).body(trainer);
+		if(sessionTrainer != null){
+			Trainer trainer = trainerService.getTrainerByTrainerNameOrEmail(sessionTrainer.getTrainerName(), sessionTrainer.getEmail());
+			if(trainer != null) {
+				log.debug("Returning valid trainer from session");
+				trainer.setPassword(null);
+				return  ResponseEntity.status(HttpStatus.OK).body(trainer);
+			}
+			log.warn("No trainer associated with current session");
 		}
-		log.warn("No trainer associated with current session");
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
