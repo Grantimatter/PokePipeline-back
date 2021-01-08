@@ -11,14 +11,15 @@ import com.revature.pokepipeline.repos.PokemonDAO;
 import com.revature.pokepipeline.models.Pokemon;
 import com.revature.pokepipeline.services.PokemonService;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
 
-	private Logger log = LogManager.getLogger(PokemonServiceImpl.class);
-	private PokemonDAO pokemonDAO;
-	private TrainerDAO trainerDAO;
+	private final Logger log = LogManager.getLogger(PokemonServiceImpl.class);
+	private final PokemonDAO pokemonDAO;
+	private final TrainerDAO trainerDAO;
 
 	@Autowired
 	public PokemonServiceImpl(PokemonDAO pokemonDAO, TrainerDAO trainerDAO) {
@@ -53,7 +54,7 @@ public class PokemonServiceImpl implements PokemonService {
 			pokemon = pokemonDAO.insertPokemon(pokemon);
 			return trainerDAO.getTrainerById(pokemon.getTrainer().getTrainerId()).getPokemonList();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -81,10 +82,10 @@ public class PokemonServiceImpl implements PokemonService {
 	@Override
 	public List<Pokemon> deletePokemon(Pokemon pokemon) {
 		if (!isValidPokemon(pokemon)) {
-			return null;
+			return Collections.emptyList();
 		} else if (pokemon.getPokemonId() <= 0) {
 			log.warn("Must have valid id to correctly update database.");
-			return null;
+			return Collections.emptyList();
 		} else {
 			pokemonDAO.deletePokemon(pokemon);
 			log.info("Pokemon deleted.");

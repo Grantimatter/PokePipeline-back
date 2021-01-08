@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.dto.PokemonDTO;
-import com.revature.pokepipeline.services.TrainerService;
 import com.revature.pokepipeline.utility.SessionUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +42,7 @@ public class PokemonController {
             if (trainer != null) {
                 pokemon.setTrainer(trainer);
                 List<Pokemon> pokemonList = pokemonService.addPokemon(pokemon);
-                if (pokemonList != null && !pokemonList.isEmpty()) {
+                if (!pokemonList.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.ACCEPTED).body(pokemonList);
                 } else {
                     return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
@@ -82,6 +81,8 @@ public class PokemonController {
     public ResponseEntity<List<Pokemon>> deletePokemon(@PathVariable("id") int id, HttpServletRequest req) {
         Pokemon pokemon = pokemonService.getPokemonById(id);
         Trainer trainer = SessionUtil.getTrainerFromSession(req);
+        String message = String.format("%s retrieved from session. Trying to match to Pokemon: %s", trainer.getTrainerId(), pokemon.getTrainer().getTrainerId());
+        log.debug(message);
         if (pokemon != null) {
             if (trainer != null) {
                 if (isOwnedByTrainer(trainer, pokemon)) {
@@ -89,8 +90,9 @@ public class PokemonController {
                     log.info("Successfully deleted Pokemon.");
                     return ResponseEntity.status(HttpStatus.ACCEPTED).body(pokemonList);
                 } else {
-                    String message = String.format("Pokemon with ID: %d does not belong to %s!", pokemon.getPokemonId(), trainer.getTrainerName());
-                    log.warn(message);
+                    String message2 = String.format("Pokemon with ID: %d does not belong to %s!", pokemon.getPokemonId(), trainer.getTrainerName());
+                    log.warn(message2);
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
                 }
             }
             log.warn("Could not locate user.");

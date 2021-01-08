@@ -21,7 +21,7 @@
 
     <bean name="ourDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver" />
-        <property name="url" value="#{ systemEnvironment['rdsUrl'] }" />
+        <property name="url"      value="#{ systemEnvironment['rdsUrl'] }" />
         <property name="username" value="#{ systemEnvironment['postgresUsername'] }" />
         <property name="password" value="#{ systemEnvironment['awsPassword'] }" />
     </bean>
@@ -44,6 +44,5 @@
         <property name="sessionFactory" ref="sessionFactory"/>
         <property name="nestedTransactionAllowed" value="true"/>
     </bean>
-
 
 </beans>

@@ -75,7 +75,8 @@ public class TrainerServiceImpl implements TrainerService {
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 log.error(e);
             }
-            String encryptedPassword = encoder.encrypt(trainer.getPassword());
+            String encryptedPassword = "";
+            if(encoder != null) encryptedPassword = encoder.encrypt(trainer.getPassword());
             trainer.setPassword(encryptedPassword);
             trainerDAO.insertTrainer(trainer);
             trainer = trainerDAO.getTrainerByTrainerNameOrEmail(trainer.getTrainerName(), trainer.getEmail());
@@ -100,11 +101,11 @@ public class TrainerServiceImpl implements TrainerService {
                 }
                 String decryptedPassword = null;
                 try {
-                    decryptedPassword = Encoder.decrypt(dbTrainer.getPassword(), encoder.getKey());
+                    if(encoder != null) decryptedPassword = Encoder.decrypt(dbTrainer.getPassword(), encoder.getKey());
                 } catch (GeneralSecurityException | IOException e) {
                     log.error(e);
                 }
-                if (decryptedPassword.equals(trainer.getPassword())) {
+                if (decryptedPassword != null && decryptedPassword.equals(trainer.getPassword())) {
                     dbTrainer.setPassword(null);
                     return dbTrainer;
                 } else {

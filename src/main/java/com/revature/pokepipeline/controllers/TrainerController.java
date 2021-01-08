@@ -1,6 +1,5 @@
 package com.revature.pokepipeline.controllers;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokepipeline.models.dto.TrainerDTO;
 import com.revature.pokepipeline.services.TrainerService;
@@ -10,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,7 +61,7 @@ public class TrainerController {
     }
 
     @PostMapping
-    public ResponseEntity<Trainer> register(@RequestBody TrainerDTO trainerDTO, HttpServletRequest req) throws IOException {
+    public ResponseEntity<Trainer> register(@RequestBody TrainerDTO trainerDTO, HttpServletRequest req) {
         Trainer trainer = objectMapper.convertValue(trainerDTO, Trainer.class);
         if(trainer != null){
             String message = String.format("Trainer DTO received: %s", trainer);
@@ -84,12 +82,11 @@ public class TrainerController {
                 log.error("Error creating user");
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
             }
-        }else if(sessionTrainer != null){
+        }else if(sessionTrainer != null) {
             log.warn("User already logged in");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }
